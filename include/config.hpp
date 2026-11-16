@@ -2,10 +2,12 @@
 
 // Every port, measurement and tuning number for the rebuild, in one place.
 //
-// "MEASURE" = a placeholder. Measure it on the real robot and put the real number in.
-// Don't run autos until every MEASURE in the drive / odometry section is filled in.
+// "PLANNED" = the design target we picked. Build to it, then measure the real robot and fix
+// the number if it came out different.
+// "MEASURE" = can only be read off the built robot. Fill it in; don't guess.
 
 #include <cstdint>
+#include "lemlib/chassis/trackingWheel.hpp"
 
 namespace cfg {
 
@@ -52,15 +54,17 @@ constexpr char ARM_FLIP_PISTON = 'C'; // double-acting
 // Drive + odometry
 // ============================================================================
 
-constexpr float TRACK_WIDTH = 0;       // MEASURE: middle of left wheels to middle of right wheels, in
+// 6 x 2.75" omnis (3 per side), all omni, 450 rpm: about 65 in/s top speed
+constexpr float TRACK_WIDTH = 12.5;    // PLANNED: middle of left wheels to middle of right wheels, in
 constexpr float DRIVE_RPM = 450;
 constexpr float HORIZONTAL_DRIFT = 2;  // LemLib: 2 for an all-omni drive
 
-constexpr float TRACK_WHEEL_DIAMETER = 2.75; // MEASURE: tracking wheel size (2" or 2.75")
+constexpr float TRACK_WHEEL_DIAMETER = lemlib::Omniwheel::NEW_2; // 2" omnis (2.125 real size), spring-loaded down
 // Offsets from the robot's turning center, inches.
 // Vertical wheel: + = right of center. Horizontal wheel: + = in front of center.
-constexpr float VERTICAL_OFFSET = 0;   // MEASURE
-constexpr float HORIZONTAL_OFFSET = 0; // MEASURE
+// Both wheels go as close to the turning center as they fit (less error when turning).
+constexpr float VERTICAL_OFFSET = 0;   // PLANNED: on the center line
+constexpr float HORIZONTAL_OFFSET = -1; // PLANNED: 1" behind the center
 
 // If one IMU always reads a little more or less than the other over 10 turns, fix it here
 // (1.0 = no change). Measure: spin 10 full turns by hand, scale = 3600 / reading.
@@ -72,9 +76,10 @@ constexpr double IMU_B_SCALE = 1.0;
 // Where each sensor sits, from the turning center: x = + right, y = + forward, inches.
 // ============================================================================
 
-constexpr float DIST_LEFT_X = 0, DIST_LEFT_Y = 0;   // MEASURE
-constexpr float DIST_RIGHT_X = 0, DIST_RIGHT_Y = 0; // MEASURE
-constexpr float DIST_BACK_X = 0, DIST_BACK_Y = 0;   // MEASURE
+// Side sensors level with the turning center, back sensor on the center line.
+constexpr float DIST_LEFT_X = -7.5, DIST_LEFT_Y = 0;   // PLANNED
+constexpr float DIST_RIGHT_X = 7.5, DIST_RIGHT_Y = 0;  // PLANNED
+constexpr float DIST_BACK_X = 0, DIST_BACK_Y = -8.5;   // PLANNED
 constexpr float WALL_RESET_MAX_ANGLE = 8; // only reset if the sensor points within this many degrees of square to the wall
 constexpr float WALL_RESET_MAX_JUMP = 8;  // ignore a reading that moves the robot more than this (it saw a goal, not the wall)
 constexpr int WALL_RESET_MAX_MM = 2000;   // past this the sensor isn't reliable
@@ -92,8 +97,8 @@ constexpr int CASCADE_MIN_POWER = 20;        // enough to move it at all
 constexpr double CASCADE_TOLERANCE = 0.3;    // inches: close enough, hold
 constexpr int CASCADE_HOLD_POWER = 8;        // gentle push up while holding (gravity)
 
-// Which way the PTO piston shifts the 3rd motor. MEASURE: look at the robot.
-// true = piston out puts the 3rd motor on the intake (rubber bands pull it back to the cascade).
+// Which way the PTO piston shifts the 3rd motor. PLANNED: piston out = intake, rubber bands
+// pull it back to the cascade. So if the air runs out, the lift still has all 3 motors.
 constexpr bool PTO_OUT_IS_INTAKE = true;
 constexpr int PTO_SHIFT_MS = 150;            // time for the gears to slide over
 
@@ -101,7 +106,7 @@ constexpr int PTO_SHIFT_MS = 150;            // time for the gears to slide over
 // Claw
 // ============================================================================
 
-constexpr bool CLAW_OUT_IS_CLOSED = true;    // MEASURE: does the piston going out close the claw?
+constexpr bool CLAW_OUT_IS_CLOSED = true;    // PLANNED: air closes the claw (strong grip), rubber bands open it
 constexpr int CLAW_MS = 200;                 // time to close / open
 constexpr int CLAW_PIN_MM = 0;               // MEASURE: claw distance sensor reading with a pin in the claw (+ a few mm)
 

@@ -63,9 +63,8 @@ const Port PORTS[] = {
 
 /** How many measurements in config.hpp are still placeholders. */
 int unmeasured() {
-	double values[] = {TRACK_WIDTH, VERTICAL_OFFSET, HORIZONTAL_OFFSET, DIST_LEFT_X + DIST_LEFT_Y,
-	                   DIST_RIGHT_X + DIST_RIGHT_Y, DIST_BACK_X + DIST_BACK_Y, CASCADE_IN_PER_DEG,
-	                   CLAW_HEIGHT_DOWN, static_cast<double>(CLAW_PIN_MM), ARM_OUT_DEG - ARM_REST_DEG};
+	double values[] = {CASCADE_IN_PER_DEG, CLAW_HEIGHT_DOWN, static_cast<double>(CLAW_PIN_MM),
+	                   ARM_OUT_DEG - ARM_REST_DEG};
 	int n = 0;
 	for (double v : values)
 		if (v == 0) n++;
