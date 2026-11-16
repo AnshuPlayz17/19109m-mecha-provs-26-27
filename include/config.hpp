@@ -12,7 +12,7 @@
 namespace cfg {
 
 // ============================================================================
-// Ports (20 used: 8 motors + radio + 11 sensors; port 9 free).
+// Ports (all 21 used: 8 motors + radio + 12 sensors).
 // Change these to match how the robot is wired. A minus sign reverses a motor or sensor.
 // ============================================================================
 
@@ -29,7 +29,7 @@ constexpr std::int8_t PTO_MOTOR = 7;
 
 // Toggle arm: 1 x 11 W
 constexpr std::int8_t ARM_MOTOR = 8;
-// port 9: free
+constexpr std::uint8_t RIGHT_OPTICAL = 9;  // toggle optical, right side
 
 // Sensors
 constexpr std::uint8_t IMU_A = 10;
@@ -40,9 +40,9 @@ constexpr std::uint8_t DIST_LEFT = 14;       // wall distance sensors
 constexpr std::uint8_t DIST_RIGHT = 15;
 constexpr std::uint8_t DIST_FRONT = 16;
 constexpr std::uint8_t CLAW_DIST = 17;
-constexpr std::uint8_t SIDE_TOGGLE_OPTICAL = 18; // second toggle optical, on the side
+constexpr std::uint8_t LEFT_OPTICAL = 18;  // toggle optical, left side
 constexpr std::int8_t CASCADE_ROT = 19;
-constexpr std::uint8_t TOGGLE_OPTICAL = 20;  // first toggle optical: sees the toggle's color
+constexpr std::uint8_t FRONT_OPTICAL = 20; // toggle optical, front
 // port 21: radio
 
 // Pistons (3-wire ports on the brain)

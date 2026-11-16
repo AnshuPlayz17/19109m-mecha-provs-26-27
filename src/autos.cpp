@@ -14,6 +14,11 @@ std::atomic<bool> isRed {true};
 float mx(float x) { return isRed ? x : -x; }
 float mh(float heading) { return isRed ? heading : -heading; }
 
+Side mside(Side side) {
+	if (isRed || side == Side::FRONT) return side;
+	return side == Side::LEFT ? Side::RIGHT : Side::LEFT;
+}
+
 void goTo(float x, float y, int timeout, bool forwards, float maxSpeed) {
 	chassis.moveToPoint(mx(x), y, timeout, {.forwards = forwards, .maxSpeed = maxSpeed});
 }

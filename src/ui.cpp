@@ -56,8 +56,9 @@ const Port PORTS[] = {
 	{DIST_FRONT, pros::DeviceType::distance, "DistF"},
 	{CLAW_DIST, pros::DeviceType::distance, "ClawDist"},
 	{std::abs(CASCADE_ROT), pros::DeviceType::rotation, "CascRot"},
-	{TOGGLE_OPTICAL, pros::DeviceType::optical, "ToggleOpt"},
-	{SIDE_TOGGLE_OPTICAL, pros::DeviceType::optical, "SideOpt"},
+	{FRONT_OPTICAL, pros::DeviceType::optical, "OptF"},
+	{LEFT_OPTICAL, pros::DeviceType::optical, "OptL"},
+	{RIGHT_OPTICAL, pros::DeviceType::optical, "OptR"},
 };
 
 /** How many measurements in config.hpp are still placeholders. */
@@ -87,7 +88,7 @@ Check checkPorts() {
 	for (const Port& p : PORTS)
 		if (pros::Device::get_plugged_type(p.port) != p.type)
 			missing += std::string(missing.empty() ? "" : ", ") + std::to_string(p.port) + " " + p.name;
-	if (missing.empty()) return {"All 19 devices plugged in", GREEN};
+	if (missing.empty()) return {"All 20 devices plugged in", GREEN};
 	return {"Unplugged: " + missing, RED};
 }
 
@@ -121,8 +122,9 @@ Check checkClaw() {
 const char* colorName(ToggleColor c) { return c == ToggleColor::RED ? "RED" : c == ToggleColor::BLUE ? "BLUE" : "-"; }
 
 Check checkToggles() {
-	std::snprintf(buf, sizeof buf, "Toggle optical %s (hue %.0f), side %s (hue %.0f)", colorName(toggleColor(false)),
-	              toggleHue(false), colorName(toggleColor(true)), toggleHue(true));
+	std::snprintf(buf, sizeof buf, "Opticals F %s %.0f  L %s %.0f  R %s %.0f", colorName(toggleColor(Side::FRONT)),
+	              toggleHue(Side::FRONT), colorName(toggleColor(Side::LEFT)), toggleHue(Side::LEFT),
+	              colorName(toggleColor(Side::RIGHT)), toggleHue(Side::RIGHT));
 	return {buf, WHITE};
 }
 

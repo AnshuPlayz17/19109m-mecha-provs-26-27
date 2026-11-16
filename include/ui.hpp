@@ -5,7 +5,7 @@
 namespace ui {
 
 /** The build number. Bump it with every change: the controller shows it at boot. */
-constexpr int BUILD = 8;
+constexpr int BUILD = 9;
 
 /** Builds the screen and starts the controller task (call once, from initialize()). */
 void start();

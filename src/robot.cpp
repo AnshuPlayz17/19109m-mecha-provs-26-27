@@ -81,8 +81,7 @@ pros::Rotation verticalEnc(TRACK_VERTICAL);
 pros::Rotation horizontalEnc(TRACK_HORIZONTAL);
 pros::Rotation cascadeRot(CASCADE_ROT);
 pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distFront(DIST_FRONT), clawDist(CLAW_DIST);
-pros::Optical toggleOptical(TOGGLE_OPTICAL);
-pros::Optical sideToggleOptical(SIDE_TOGGLE_OPTICAL);
+pros::Optical frontOptical(FRONT_OPTICAL), leftOptical(LEFT_OPTICAL), rightOptical(RIGHT_OPTICAL);
 
 pros::adi::Pneumatics clawPiston(CLAW_PISTON, false);
 pros::adi::Pneumatics ptoPiston(PTO_PISTON, false);
@@ -340,10 +339,18 @@ bool armFlipped() { return armFlipPiston.is_extended(); }
 
 #include "autos.hpp" // isRed
 
-double toggleHue(bool side) { return (side ? sideToggleOptical : toggleOptical).get_hue(); }
+namespace {
+pros::Optical& optical(Side side) {
+	if (side == Side::LEFT) return leftOptical;
+	if (side == Side::RIGHT) return rightOptical;
+	return frontOptical;
+}
+} // namespace
 
-ToggleColor toggleColor(bool side) {
-	pros::Optical& sensor = side ? sideToggleOptical : toggleOptical;
+double toggleHue(Side side) { return optical(side).get_hue(); }
+
+ToggleColor toggleColor(Side side) {
+	pros::Optical& sensor = optical(side);
 	if (sensor.get_proximity() < TOGGLE_MIN_PROXIMITY) return ToggleColor::NONE;
 	double hue = sensor.get_hue();
 	if (!good(hue)) return ToggleColor::NONE;
@@ -352,7 +359,7 @@ ToggleColor toggleColor(bool side) {
 	return ToggleColor::NONE;
 }
 
-bool toggleIsOurs(bool side) { return toggleColor(side) == (isRed ? ToggleColor::RED : ToggleColor::BLUE); }
+bool toggleIsOurs(Side side) { return toggleColor(side) == (isRed ? ToggleColor::RED : ToggleColor::BLUE); }
 
 // ============================================================================
 // Wall resets
@@ -422,8 +429,7 @@ void robotStart() {
 	ptoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cascadeRot.reset_position(); // the cascade starts all the way down
-	toggleOptical.set_led_pwm(100);
-	sideToggleOptical.set_led_pwm(100);
+	for (pros::Optical* o : {&frontOptical, &leftOptical, &rightOptical}) o->set_led_pwm(100);
 	arm.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
 	arm.tare_position(); // the arm starts on their hardstop
 	pros::Task cascadeLoop(cascadeTask, "cascade");

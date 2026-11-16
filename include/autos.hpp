@@ -2,6 +2,8 @@
 
 #include <atomic>
 
+#include "robot.hpp"
+
 // The autos. Each one is written for the RED side; on BLUE it runs mirrored (x flipped).
 // Add new autos to the list in src/autos.cpp.
 
@@ -27,6 +29,8 @@ void runSelectedAuto();
 float mx(float x);
 /** a heading on our side. */
 float mh(float heading);
+/** A toggle optical on our side: LEFT/RIGHT as written on red, swapped on blue. */
+Side mside(Side side);
 /** Drive to a point (red-side coordinates). */
 void goTo(float x, float y, int timeout = 2000, bool forwards = true, float maxSpeed = 127);
 /** Turn to a heading (red-side). */

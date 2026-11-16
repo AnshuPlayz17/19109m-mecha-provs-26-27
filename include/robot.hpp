@@ -36,7 +36,7 @@ extern pros::Motor arm;
 extern DualImu imu;
 extern pros::Rotation verticalEnc, horizontalEnc, cascadeRot;
 extern pros::Distance distLeft, distRight, distFront, clawDist;
-extern pros::Optical toggleOptical, sideToggleOptical;
+extern pros::Optical frontOptical, leftOptical, rightOptical;
 extern pros::adi::Pneumatics clawPiston, ptoPiston, armFlipPiston, balancerPiston;
 extern lemlib::Chassis chassis;
 extern pros::Controller controller;
@@ -94,13 +94,14 @@ bool armFlipped();
 
 // ---- toggle optical ----
 enum class ToggleColor { NONE, RED, BLUE };
-/** The color a toggle optical sees (NONE if nothing is close or the color isn't clear).
- * side = false: the first toggle optical, true: the side one. */
-ToggleColor toggleColor(bool side = false);
+/** Which toggle optical. In autos use mside() so LEFT/RIGHT swap on blue. */
+enum class Side { FRONT, LEFT, RIGHT };
+/** The color a toggle optical sees (NONE if nothing is close or the color isn't clear). */
+ToggleColor toggleColor(Side side);
 /** Whether the toggle in front of that sensor shows our alliance's color. */
-bool toggleIsOurs(bool side = false);
+bool toggleIsOurs(Side side);
 /** The hue that sensor reads (check screen). */
-double toggleHue(bool side = false);
+double toggleHue(Side side);
 
 // ---- wall resets ----
 /** Which walls a reset used (for the report). */
