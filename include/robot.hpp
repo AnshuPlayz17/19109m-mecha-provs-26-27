@@ -32,7 +32,7 @@ class DualImu : public pros::Imu {
 extern pros::MotorGroup leftDrive, rightDrive;
 extern pros::MotorGroup cascadeMotors; // the 2 that always drive the cascade
 extern pros::Motor ptoMotor;            // the 3rd: cascade or intake
-extern pros::MotorGroup arms;
+extern pros::Motor arm;
 extern DualImu imu;
 extern pros::Rotation verticalEnc, horizontalEnc, cascadeRot;
 extern pros::Distance distLeft, distRight, distFront, clawDist;

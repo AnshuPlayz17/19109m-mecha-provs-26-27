@@ -46,8 +46,7 @@ const Port PORTS[] = {
 	{std::abs(CASCADE_A), pros::DeviceType::motor, "CascA"},
 	{std::abs(CASCADE_B), pros::DeviceType::motor, "CascB"},
 	{std::abs(PTO_MOTOR), pros::DeviceType::motor, "PTO"},
-	{std::abs(ARM_LEFT), pros::DeviceType::motor, "ArmL"},
-	{std::abs(ARM_RIGHT), pros::DeviceType::motor, "ArmR"},
+	{std::abs(ARM_MOTOR), pros::DeviceType::motor, "Arm"},
 	{IMU_A, pros::DeviceType::imu, "IMU A"},
 	{IMU_B, pros::DeviceType::imu, "IMU B"},
 	{std::abs(TRACK_VERTICAL), pros::DeviceType::rotation, "TrackV"},
@@ -88,7 +87,7 @@ Check checkPorts() {
 	for (const Port& p : PORTS)
 		if (pros::Device::get_plugged_type(p.port) != p.type)
 			missing += std::string(missing.empty() ? "" : ", ") + std::to_string(p.port) + " " + p.name;
-	if (missing.empty()) return {"All 20 devices plugged in", GREEN};
+	if (missing.empty()) return {"All 19 devices plugged in", GREEN};
 	return {"Unplugged: " + missing, RED};
 }
 
@@ -100,7 +99,7 @@ Check checkBattery() {
 
 Check checkArm() {
 	if (armFlipped()) return {"Arm flip is OUT: put it in", RED};
-	std::snprintf(buf, sizeof buf, "Arms on the hardstop? (%.0f deg since start)", armAngle());
+	std::snprintf(buf, sizeof buf, "Arm on the hardstop? (%.0f deg since start)", armAngle());
 	return {buf, YELLOW};
 }
 

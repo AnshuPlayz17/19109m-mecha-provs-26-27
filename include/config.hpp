@@ -12,7 +12,7 @@
 namespace cfg {
 
 // ============================================================================
-// Ports (all 21 used: 9 motors + radio + 11 sensors).
+// Ports (20 used: 8 motors + radio + 11 sensors; port 9 free).
 // Change these to match how the robot is wired. A minus sign reverses a motor or sensor.
 // ============================================================================
 
@@ -27,9 +27,9 @@ constexpr std::int8_t CASCADE_A = 5;
 constexpr std::int8_t CASCADE_B = -6;
 constexpr std::int8_t PTO_MOTOR = 7;
 
-// Toggle arms: 2 x 5.5 W
-constexpr std::int8_t ARM_LEFT = 8;
-constexpr std::int8_t ARM_RIGHT = -9;
+// Toggle arm: 1 x 11 W
+constexpr std::int8_t ARM_MOTOR = 8;
+// port 9: free
 
 // Sensors
 constexpr std::uint8_t IMU_A = 10;
@@ -127,7 +127,7 @@ constexpr double BLUE_HUE_MIN = 190, BLUE_HUE_MAX = 250;
 constexpr int TOGGLE_MIN_PROXIMITY = 100;    // 0-255: closer than this counts as "sees a toggle"
 
 // ============================================================================
-// Toggle arms (2 x 5.5 W, motor encoders)
+// Toggle arm (1 x 11 W, motor encoder)
 // ============================================================================
 
 // No arm sensor: the arm motors' own encoders, zeroed when the program starts. So start every

@@ -74,7 +74,7 @@ pros::MotorGroup leftDrive({LEFT_FRONT, LEFT_BACK}, pros::MotorGears::blue);
 pros::MotorGroup rightDrive({RIGHT_FRONT, RIGHT_BACK}, pros::MotorGears::blue);
 pros::MotorGroup cascadeMotors({CASCADE_A, CASCADE_B});
 pros::Motor ptoMotor(PTO_MOTOR);
-pros::MotorGroup arms({ARM_LEFT, ARM_RIGHT});
+pros::Motor arm(ARM_MOTOR);
 
 DualImu imu(IMU_A, IMU_B);
 pros::Rotation verticalEnc(TRACK_VERTICAL);
@@ -280,15 +280,15 @@ void armTask() {
 			double error = armTarget - armAngle();
 			if (std::abs(error) < ARM_TOLERANCE) {
 				armThere = true;
-				arms.brake();
+				arm.brake();
 			} else {
 				armThere = false;
-				arms.move(std::clamp(static_cast<int>(error * ARM_KP), -127, 127));
+				arm.move(std::clamp(static_cast<int>(error * ARM_KP), -127, 127));
 			}
 		} else if (armManualPower == 0) {
-			arms.brake();
+			arm.brake();
 		} else {
-			arms.move(armManualPower);
+			arm.move(armManualPower);
 		}
 		pros::delay(10);
 	}
@@ -296,10 +296,8 @@ void armTask() {
 } // namespace
 
 double armAngle() {
-	double a = arms.get_position(0), b = arms.get_position(1);
-	if (!good(a)) a = good(b) ? b : 0;
-	if (!good(b)) b = a;
-	return (a + b) / 2;
+	double a = arm.get_position();
+	return good(a) ? a : 0;
 }
 
 void armTo(double deg) {
@@ -422,12 +420,12 @@ WallReset wallReset() {
 void robotStart() {
 	cascadeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 	ptoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	arms.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+	arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cascadeRot.reset_position(); // the cascade starts all the way down
 	toggleOptical.set_led_pwm(100);
 	sideToggleOptical.set_led_pwm(100);
-	arms.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-	arms.tare_position_all(); // the arms start on their hardstop
+	arm.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+	arm.tare_position(); // the arm starts on their hardstop
 	pros::Task cascadeLoop(cascadeTask, "cascade");
 	pros::Task armLoop(armTask, "arm");
 }
