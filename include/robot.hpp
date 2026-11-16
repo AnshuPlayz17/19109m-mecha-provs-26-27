@@ -34,9 +34,9 @@ extern pros::MotorGroup cascadeMotors; // the 2 that always drive the cascade
 extern pros::Motor ptoMotor;            // the 3rd: cascade or intake
 extern pros::MotorGroup arms;
 extern DualImu imu;
-extern pros::Rotation verticalEnc, horizontalEnc, armRot;
-extern pros::Distance distLeft, distRight, distBack, distFront, clawDist;
-extern pros::Optical clawOptical;
+extern pros::Rotation verticalEnc, horizontalEnc, armRot, cascadeRot;
+extern pros::Distance distLeft, distRight, distFront, clawDist;
+extern pros::Optical toggleOptical;
 extern pros::adi::Pneumatics clawPiston, ptoPiston, armFlipPiston, balancerPiston;
 extern lemlib::Chassis chassis;
 extern pros::Controller controller;
@@ -93,6 +93,13 @@ void armManual(int power);
 /** The double-acting arm flip piston. */
 void armFlip(bool out);
 bool armFlipped();
+
+// ---- toggle optical ----
+enum class ToggleColor { NONE, RED, BLUE };
+/** The color the toggle optical sees (NONE if nothing is close or the color isn't clear). */
+ToggleColor toggleColor();
+/** Whether the toggle in front of the sensor shows our alliance's color. */
+bool toggleIsOurs();
 
 // ---- wall resets ----
 /** Which walls a reset used (for the report). */

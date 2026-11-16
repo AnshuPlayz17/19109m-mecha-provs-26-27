@@ -80,8 +80,9 @@ DualImu imu(IMU_A, IMU_B);
 pros::Rotation verticalEnc(TRACK_VERTICAL);
 pros::Rotation horizontalEnc(TRACK_HORIZONTAL);
 pros::Rotation armRot(ARM_ROT);
-pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distBack(DIST_BACK), distFront(DIST_FRONT), clawDist(CLAW_DIST);
-pros::Optical clawOptical(CLAW_OPTICAL);
+pros::Rotation cascadeRot(CASCADE_ROT);
+pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distFront(DIST_FRONT), clawDist(CLAW_DIST);
+pros::Optical toggleOptical(TOGGLE_OPTICAL);
 
 pros::adi::Pneumatics clawPiston(CLAW_PISTON, false);
 pros::adi::Pneumatics ptoPiston(PTO_PISTON, false);
@@ -190,11 +191,9 @@ void cascadeTask() {
 double cascadeInches() {
 	if (!cascadeSetUp()) return NAN;
 	// the 2 cascade motors are always on the cascade: their encoders give the height (average of both)
-	double a = cascadeMotors.get_position(0), b = cascadeMotors.get_position(1);
-	if (!good(a) && !good(b)) return NAN; // both unplugged
-	if (!good(a)) a = b;
-	if (!good(b)) b = a;
-	return (a + b) / 2 * CASCADE_IN_PER_DEG;
+	std::int32_t pos = cascadeRot.get_position();
+	if (pos == PROS_ERR) return NAN; // sensor unplugged
+	return pos / 100.0 * CASCADE_IN_PER_DEG;
 }
 
 bool balancersOut() { return balancersAreOut; }
@@ -342,6 +341,23 @@ void armFlip(bool out) {
 bool armFlipped() { return armFlipPiston.is_extended(); }
 
 // ============================================================================
+// Toggle optical
+// ============================================================================
+
+#include "autos.hpp" // isRed
+
+ToggleColor toggleColor() {
+	if (toggleOptical.get_proximity() < TOGGLE_MIN_PROXIMITY) return ToggleColor::NONE;
+	double hue = toggleOptical.get_hue();
+	if (!good(hue)) return ToggleColor::NONE;
+	if (hue <= RED_HUE_MAX || hue >= RED_HUE_MIN) return ToggleColor::RED;
+	if (hue >= BLUE_HUE_MIN && hue <= BLUE_HUE_MAX) return ToggleColor::BLUE;
+	return ToggleColor::NONE;
+}
+
+bool toggleIsOurs() { return toggleColor() == (isRed ? ToggleColor::RED : ToggleColor::BLUE); }
+
+// ============================================================================
 // Wall resets
 // ============================================================================
 
@@ -366,7 +382,6 @@ WallReset wallReset() {
 	WallSensor wallSensors[] = {
 		{&distLeft, DIST_LEFT_X, DIST_LEFT_Y, -90},
 		{&distRight, DIST_RIGHT_X, DIST_RIGHT_Y, 90},
-		{&distBack, DIST_BACK_X, DIST_BACK_Y, 180},
 		{&distFront, DIST_FRONT_X, DIST_FRONT_Y, 0},
 	};
 	lemlib::Pose pose = chassis.getPose();
@@ -409,9 +424,8 @@ void robotStart() {
 	cascadeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 	ptoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	arms.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
-	cascadeMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-	cascadeMotors.tare_position_all(); // the cascade starts all the way down
-	clawOptical.set_led_pwm(100);
+	cascadeRot.reset_position(); // the cascade starts all the way down
+	toggleOptical.set_led_pwm(100);
 	pros::Task cascadeLoop(cascadeTask, "cascade");
 	pros::Task armLoop(armTask, "arm");
 }

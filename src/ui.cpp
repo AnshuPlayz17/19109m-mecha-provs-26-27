@@ -54,11 +54,11 @@ const Port PORTS[] = {
 	{std::abs(TRACK_HORIZONTAL), pros::DeviceType::rotation, "TrackH"},
 	{DIST_LEFT, pros::DeviceType::distance, "DistL"},
 	{DIST_RIGHT, pros::DeviceType::distance, "DistR"},
-	{DIST_BACK, pros::DeviceType::distance, "DistB"},
 	{DIST_FRONT, pros::DeviceType::distance, "DistF"},
 	{CLAW_DIST, pros::DeviceType::distance, "ClawDist"},
 	{std::abs(ARM_ROT), pros::DeviceType::rotation, "ArmRot"},
-	{CLAW_OPTICAL, pros::DeviceType::optical, "Optical"},
+	{std::abs(CASCADE_ROT), pros::DeviceType::rotation, "CascRot"},
+	{TOGGLE_OPTICAL, pros::DeviceType::optical, "ToggleOpt"},
 };
 
 /** How many measurements in config.hpp are still placeholders. */
@@ -108,14 +108,16 @@ Check checkCascade() {
 	double in = cascadeInches();
 	if (std::isnan(in)) return {"Cascade: not set up (CASCADE_IN_PER_DEG)", YELLOW};
 	std::snprintf(buf, sizeof buf, "Cascade %.1f in up (%.0f deg), PTO on %s%s", in,
-	              (cascadeMotors.get_position(0) + cascadeMotors.get_position(1)) / 2, intakeMode() ? "intake" : "cascade",
+	              cascadeRot.get_position() / 100.0, intakeMode() ? "intake" : "cascade",
 	              balancersOut() ? ", BALANCERS OUT" : "");
 	return {buf, std::abs(in) < 0.5 && !balancersOut() ? GREEN : RED};
 }
 
 Check checkClaw() {
-	std::snprintf(buf, sizeof buf, "Claw %s, %s (%d mm), hue %.0f", clawClosed() ? "closed" : "open",
-	              clawHasPin() ? "pin in" : "no pin", static_cast<int>(clawDist.get_distance()), clawOptical.get_hue());
+	ToggleColor t = toggleColor();
+	std::snprintf(buf, sizeof buf, "Claw %s, %s (%d mm) | toggle %s (hue %.0f)", clawClosed() ? "closed" : "open",
+	              clawHasPin() ? "pin in" : "no pin", static_cast<int>(clawDist.get_distance()),
+	              t == ToggleColor::RED ? "RED" : t == ToggleColor::BLUE ? "BLUE" : "-", toggleOptical.get_hue());
 	return {buf, WHITE};
 }
 

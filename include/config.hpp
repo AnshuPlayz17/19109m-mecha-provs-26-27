@@ -38,11 +38,11 @@ constexpr std::int8_t TRACK_VERTICAL = 12;   // rotation sensor, wheel rolls for
 constexpr std::int8_t TRACK_HORIZONTAL = 13; // rotation sensor, wheel rolls left/right
 constexpr std::uint8_t DIST_LEFT = 14;       // wall distance sensors
 constexpr std::uint8_t DIST_RIGHT = 15;
-constexpr std::uint8_t DIST_BACK = 16;
-constexpr std::uint8_t DIST_FRONT = 19;     // (was the cascade rotation sensor: the cascade motors' own encoders do that job)
+constexpr std::uint8_t DIST_FRONT = 16;
 constexpr std::uint8_t CLAW_DIST = 17;
 constexpr std::int8_t ARM_ROT = 18;
-constexpr std::uint8_t CLAW_OPTICAL = 20;
+constexpr std::int8_t CASCADE_ROT = 19;
+constexpr std::uint8_t TOGGLE_OPTICAL = 20;  // sees the toggle's color
 // port 21: radio
 
 // Pistons (3-wire ports on the brain)
@@ -80,7 +80,6 @@ constexpr double IMU_B_SCALE = 1.0;
 // Side sensors level with the turning center, back sensor on the center line.
 constexpr float DIST_LEFT_X = -7.5, DIST_LEFT_Y = 0;   // PLANNED
 constexpr float DIST_RIGHT_X = 7.5, DIST_RIGHT_Y = 0;  // PLANNED
-constexpr float DIST_BACK_X = 0, DIST_BACK_Y = -8.5;   // PLANNED
 constexpr float DIST_FRONT_X = 0, DIST_FRONT_Y = 8.5;  // PLANNED
 constexpr float WALL_RESET_MAX_ANGLE = 8; // only reset if the sensor points within this many degrees of square to the wall
 constexpr float WALL_RESET_MAX_JUMP = 8;  // ignore a reading that moves the robot more than this (it saw a goal, not the wall)
@@ -91,7 +90,7 @@ constexpr int WALL_RESET_MAX_MM = 2000;   // past this the sensor isn't reliable
 // ============================================================================
 
 constexpr double CASCADE_TRAVEL = 30;        // inches from all the way down to all the way up
-constexpr double CASCADE_IN_PER_DEG = 0;     // MEASURE: inches the claw rises per cascade-motor degree
+constexpr double CASCADE_IN_PER_DEG = 0;     // MEASURE: inches the claw rises per cascade rotation-sensor degree
                                              // (raise to the top, CASCADE_TRAVEL / degrees shown on the screen)
 constexpr double CLAW_HEIGHT_DOWN = 0;       // MEASURE: floor to the bottom of the closed claw, cascade all the way down, in
 constexpr double CASCADE_KP = 25;            // power per inch of error
@@ -116,6 +115,16 @@ constexpr int PTO_SHIFT_MS = 150;            // time for the gears to slide over
 constexpr bool CLAW_OUT_IS_CLOSED = true;    // PLANNED: air closes the claw (strong grip), rubber bands open it
 constexpr int CLAW_MS = 200;                 // time to close / open
 constexpr int CLAW_PIN_MM = 0;               // MEASURE: claw distance sensor reading with a pin in the claw (+ a few mm)
+
+// ============================================================================
+// Toggle optical: which color the toggle shows. Starting values: check them on a real toggle
+// (the check screen shows the hue) and fix if needed.
+// ============================================================================
+
+constexpr double RED_HUE_MAX = 30;           // red: hue below this ...
+constexpr double RED_HUE_MIN = 330;          // ... or above this
+constexpr double BLUE_HUE_MIN = 190, BLUE_HUE_MAX = 250;
+constexpr int TOGGLE_MIN_PROXIMITY = 100;    // 0-255: closer than this counts as "sees a toggle"
 
 // ============================================================================
 // Toggle arms (rotation sensor on the arm)
