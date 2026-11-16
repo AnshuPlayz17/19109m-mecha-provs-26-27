@@ -78,6 +78,14 @@ bool clawClosed();
 /** Whether the claw distance sensor sees a pin in the claw. */
 bool clawHasPin();
 
+// ---- match loading ----
+/** Main way: cascade down, claw open, wait for a load dropped in from the back, close, lift a
+ * little. Returns false if nothing came within LOAD_TIMEOUT_MS (claw stays open). */
+bool loadFromBack();
+/** Other way: PTO on the intake, run it until the load reaches the claw, close, PTO back on the
+ * cascade. Returns false if nothing came in time. */
+bool loadFromIntake();
+
 // ---- toggle arms ----
 /** Arm angle from the hardstop, motor degrees (0 = where it was when the program started). */
 double armAngle();

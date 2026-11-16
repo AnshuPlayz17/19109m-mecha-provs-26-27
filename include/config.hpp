@@ -116,6 +116,11 @@ constexpr bool CLAW_OUT_IS_CLOSED = true;    // PLANNED: air closes the claw (st
 constexpr int CLAW_MS = 200;                 // time to close / open
 constexpr int CLAW_PIN_MM = 0;               // MEASURE: claw distance sensor reading with a pin in the claw (+ a few mm)
 
+// Match loading. Main way: dropped into the claw from the back, then close and lift.
+constexpr int LOAD_SETTLE_MS = 100;          // after the sensor sees the load: time for it to drop all the way in
+constexpr int LOAD_TIMEOUT_MS = 3000;        // give up waiting for a load after this
+constexpr double LOAD_LIFT = 2;              // inches to lift right after closing (clears the loader)
+
 // ============================================================================
 // Toggle optical: which color the toggle shows. Starting values: check them on a real toggle
 // (the check screen shows the hue) and fix if needed.

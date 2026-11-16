@@ -264,6 +264,48 @@ bool clawHasPin() {
 }
 
 // ============================================================================
+// Match loading
+// ============================================================================
+
+namespace {
+/** Waits until the claw sensor sees a load (true) or the timeout (false). */
+bool waitForLoad() {
+	std::uint32_t start = pros::millis();
+	while (!clawHasPin()) {
+		if (pros::millis() - start > static_cast<std::uint32_t>(LOAD_TIMEOUT_MS)) return false;
+		pros::delay(10);
+	}
+	return true;
+}
+} // namespace
+
+bool loadFromBack() {
+	clawOpen(false);
+	cascadeTo(0);
+	if (!waitForLoad()) return false;
+	pros::delay(LOAD_SETTLE_MS);
+	clawClose();
+	cascadeTo(LOAD_LIFT); // lift right away; the caller drives off without waiting
+	return true;
+}
+
+bool loadFromIntake() {
+	clawOpen(false);
+	cascadeTo(0);
+	setIntakeMode(true);
+	intake(127);
+	bool got = waitForLoad();
+	intake(0);
+	if (got) {
+		pros::delay(LOAD_SETTLE_MS);
+		clawClose();
+	}
+	setIntakeMode(false);
+	if (got) cascadeTo(LOAD_LIFT);
+	return got;
+}
+
+// ============================================================================
 // Toggle arms
 // ============================================================================
 
