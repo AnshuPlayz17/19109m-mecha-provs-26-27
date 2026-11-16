@@ -30,7 +30,7 @@ struct Check {
 		std::uint32_t color;
 };
 
-enum CheckId { C_IMU, C_PORTS, C_BATTERY, C_ARM, C_CASCADE, C_CLAW, C_SETTINGS, C_AIR, C_COUNT };
+enum CheckId { C_IMU, C_PORTS, C_BATTERY, C_ARM, C_CASCADE, C_CLAW, C_TOGGLES, C_SETTINGS, C_AIR, C_COUNT };
 
 struct Port {
 		int port;
@@ -56,15 +56,15 @@ const Port PORTS[] = {
 	{DIST_RIGHT, pros::DeviceType::distance, "DistR"},
 	{DIST_FRONT, pros::DeviceType::distance, "DistF"},
 	{CLAW_DIST, pros::DeviceType::distance, "ClawDist"},
-	{std::abs(ARM_ROT), pros::DeviceType::rotation, "ArmRot"},
 	{std::abs(CASCADE_ROT), pros::DeviceType::rotation, "CascRot"},
 	{TOGGLE_OPTICAL, pros::DeviceType::optical, "ToggleOpt"},
+	{SIDE_TOGGLE_OPTICAL, pros::DeviceType::optical, "SideOpt"},
 };
 
 /** How many measurements in config.hpp are still placeholders. */
 int unmeasured() {
 	double values[] = {CASCADE_IN_PER_DEG, CLAW_HEIGHT_DOWN, static_cast<double>(CLAW_PIN_MM),
-	                   ARM_OUT_DEG - ARM_REST_DEG};
+	                   ARM_OUT_DEG};
 	int n = 0;
 	for (double v : values)
 		if (v == 0) n++;
@@ -99,9 +99,9 @@ Check checkBattery() {
 }
 
 Check checkArm() {
-	std::snprintf(buf, sizeof buf, "Arm %s (%.1f deg from rest)%s", armZeroed() ? "zeroed" : "NOT at rest",
-	              armAngle(), armFlipped() ? ", flip OUT" : "");
-	return {buf, armZeroed() && !armFlipped() ? GREEN : RED};
+	if (armFlipped()) return {"Arm flip is OUT: put it in", RED};
+	std::snprintf(buf, sizeof buf, "Arms on the hardstop? (%.0f deg since start)", armAngle());
+	return {buf, YELLOW};
 }
 
 Check checkCascade() {
@@ -114,10 +114,16 @@ Check checkCascade() {
 }
 
 Check checkClaw() {
-	ToggleColor t = toggleColor();
-	std::snprintf(buf, sizeof buf, "Claw %s, %s (%d mm) | toggle %s (hue %.0f)", clawClosed() ? "closed" : "open",
-	              clawHasPin() ? "pin in" : "no pin", static_cast<int>(clawDist.get_distance()),
-	              t == ToggleColor::RED ? "RED" : t == ToggleColor::BLUE ? "BLUE" : "-", toggleOptical.get_hue());
+	std::snprintf(buf, sizeof buf, "Claw %s, %s (%d mm)", clawClosed() ? "closed" : "open",
+	              clawHasPin() ? "pin in" : "no pin", static_cast<int>(clawDist.get_distance()));
+	return {buf, WHITE};
+}
+
+const char* colorName(ToggleColor c) { return c == ToggleColor::RED ? "RED" : c == ToggleColor::BLUE ? "BLUE" : "-"; }
+
+Check checkToggles() {
+	std::snprintf(buf, sizeof buf, "Toggle optical %s (hue %.0f), side %s (hue %.0f)", colorName(toggleColor(false)),
+	              toggleHue(false), colorName(toggleColor(true)), toggleHue(true));
 	return {buf, WHITE};
 }
 
@@ -138,6 +144,7 @@ Check runCheck(int i) {
 		case C_ARM: return checkArm();
 		case C_CASCADE: return checkCascade();
 		case C_CLAW: return checkClaw();
+		case C_TOGGLES: return checkToggles();
 		case C_SETTINGS: return checkSettings();
 		default: return checkAir();
 	}
@@ -241,7 +248,7 @@ void build() {
 	banner = label(scr, 6, 24, &lv_font_montserrat_24);
 
 	for (int i = 0; i < C_COUNT; i++) {
-		checkLabels[i] = label(scr, 6, 56 + i * 22, &lv_font_montserrat_14);
+		checkLabels[i] = label(scr, 6, 54 + i * 20, &lv_font_montserrat_14);
 		lv_obj_set_width(checkLabels[i], 300);
 		lv_label_set_long_mode(checkLabels[i], LV_LABEL_LONG_DOT);
 	}

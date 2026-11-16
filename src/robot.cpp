@@ -79,10 +79,10 @@ pros::MotorGroup arms({ARM_LEFT, ARM_RIGHT});
 DualImu imu(IMU_A, IMU_B);
 pros::Rotation verticalEnc(TRACK_VERTICAL);
 pros::Rotation horizontalEnc(TRACK_HORIZONTAL);
-pros::Rotation armRot(ARM_ROT);
 pros::Rotation cascadeRot(CASCADE_ROT);
 pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distFront(DIST_FRONT), clawDist(CLAW_DIST);
 pros::Optical toggleOptical(TOGGLE_OPTICAL);
+pros::Optical sideToggleOptical(SIDE_TOGGLE_OPTICAL);
 
 pros::adi::Pneumatics clawPiston(CLAW_PISTON, false);
 pros::adi::Pneumatics ptoPiston(PTO_PISTON, false);
@@ -296,14 +296,11 @@ void armTask() {
 } // namespace
 
 double armAngle() {
-	// absolute angle, so it's right even after the program restarts; -180..180 from rest
-	double d = armRot.get_angle() / 100.0 - ARM_REST_DEG;
-	while (d > 180) d -= 360;
-	while (d < -180) d += 360;
-	return d;
+	double a = arms.get_position(0), b = arms.get_position(1);
+	if (!good(a)) a = good(b) ? b : 0;
+	if (!good(b)) b = a;
+	return (a + b) / 2;
 }
-
-bool armZeroed() { return std::abs(armAngle()) <= ARM_ZERO_TOLERANCE; }
 
 void armTo(double deg) {
 	armTarget = deg;
@@ -312,8 +309,7 @@ void armTo(double deg) {
 }
 
 void armOut() {
-	double out = ARM_OUT_DEG - ARM_REST_DEG;
-	if (out != 0) armTo(out);
+	if (ARM_OUT_DEG != 0) armTo(ARM_OUT_DEG);
 }
 
 void armIn() { armTo(0); }
@@ -346,16 +342,19 @@ bool armFlipped() { return armFlipPiston.is_extended(); }
 
 #include "autos.hpp" // isRed
 
-ToggleColor toggleColor() {
-	if (toggleOptical.get_proximity() < TOGGLE_MIN_PROXIMITY) return ToggleColor::NONE;
-	double hue = toggleOptical.get_hue();
+double toggleHue(bool side) { return (side ? sideToggleOptical : toggleOptical).get_hue(); }
+
+ToggleColor toggleColor(bool side) {
+	pros::Optical& sensor = side ? sideToggleOptical : toggleOptical;
+	if (sensor.get_proximity() < TOGGLE_MIN_PROXIMITY) return ToggleColor::NONE;
+	double hue = sensor.get_hue();
 	if (!good(hue)) return ToggleColor::NONE;
 	if (hue <= RED_HUE_MAX || hue >= RED_HUE_MIN) return ToggleColor::RED;
 	if (hue >= BLUE_HUE_MIN && hue <= BLUE_HUE_MAX) return ToggleColor::BLUE;
 	return ToggleColor::NONE;
 }
 
-bool toggleIsOurs() { return toggleColor() == (isRed ? ToggleColor::RED : ToggleColor::BLUE); }
+bool toggleIsOurs(bool side) { return toggleColor(side) == (isRed ? ToggleColor::RED : ToggleColor::BLUE); }
 
 // ============================================================================
 // Wall resets
@@ -426,6 +425,9 @@ void robotStart() {
 	arms.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 	cascadeRot.reset_position(); // the cascade starts all the way down
 	toggleOptical.set_led_pwm(100);
+	sideToggleOptical.set_led_pwm(100);
+	arms.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+	arms.tare_position_all(); // the arms start on their hardstop
 	pros::Task cascadeLoop(cascadeTask, "cascade");
 	pros::Task armLoop(armTask, "arm");
 }

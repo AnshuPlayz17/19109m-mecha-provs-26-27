@@ -34,9 +34,9 @@ extern pros::MotorGroup cascadeMotors; // the 2 that always drive the cascade
 extern pros::Motor ptoMotor;            // the 3rd: cascade or intake
 extern pros::MotorGroup arms;
 extern DualImu imu;
-extern pros::Rotation verticalEnc, horizontalEnc, armRot, cascadeRot;
+extern pros::Rotation verticalEnc, horizontalEnc, cascadeRot;
 extern pros::Distance distLeft, distRight, distFront, clawDist;
-extern pros::Optical toggleOptical;
+extern pros::Optical toggleOptical, sideToggleOptical;
 extern pros::adi::Pneumatics clawPiston, ptoPiston, armFlipPiston, balancerPiston;
 extern lemlib::Chassis chassis;
 extern pros::Controller controller;
@@ -79,10 +79,8 @@ bool clawClosed();
 bool clawHasPin();
 
 // ---- toggle arms ----
-/** Arm angle from rest, degrees (sensor reading - rest). */
+/** Arm angle from the hardstop, motor degrees (0 = where it was when the program started). */
 double armAngle();
-/** Whether the arm is at rest (for the pre-auto check). */
-bool armZeroed();
 /** Starts moving the arm to this angle from rest; returns right away. */
 void armTo(double deg);
 void armOut();
@@ -96,10 +94,13 @@ bool armFlipped();
 
 // ---- toggle optical ----
 enum class ToggleColor { NONE, RED, BLUE };
-/** The color the toggle optical sees (NONE if nothing is close or the color isn't clear). */
-ToggleColor toggleColor();
-/** Whether the toggle in front of the sensor shows our alliance's color. */
-bool toggleIsOurs();
+/** The color a toggle optical sees (NONE if nothing is close or the color isn't clear).
+ * side = false: the first toggle optical, true: the side one. */
+ToggleColor toggleColor(bool side = false);
+/** Whether the toggle in front of that sensor shows our alliance's color. */
+bool toggleIsOurs(bool side = false);
+/** The hue that sensor reads (check screen). */
+double toggleHue(bool side = false);
 
 // ---- wall resets ----
 /** Which walls a reset used (for the report). */

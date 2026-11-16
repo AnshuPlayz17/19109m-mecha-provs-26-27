@@ -40,9 +40,9 @@ constexpr std::uint8_t DIST_LEFT = 14;       // wall distance sensors
 constexpr std::uint8_t DIST_RIGHT = 15;
 constexpr std::uint8_t DIST_FRONT = 16;
 constexpr std::uint8_t CLAW_DIST = 17;
-constexpr std::int8_t ARM_ROT = 18;
+constexpr std::uint8_t SIDE_TOGGLE_OPTICAL = 18; // second toggle optical, on the side
 constexpr std::int8_t CASCADE_ROT = 19;
-constexpr std::uint8_t TOGGLE_OPTICAL = 20;  // sees the toggle's color
+constexpr std::uint8_t TOGGLE_OPTICAL = 20;  // first toggle optical: sees the toggle's color
 // port 21: radio
 
 // Pistons (3-wire ports on the brain)
@@ -127,12 +127,12 @@ constexpr double BLUE_HUE_MIN = 190, BLUE_HUE_MAX = 250;
 constexpr int TOGGLE_MIN_PROXIMITY = 100;    // 0-255: closer than this counts as "sees a toggle"
 
 // ============================================================================
-// Toggle arms (rotation sensor on the arm)
+// Toggle arms (2 x 5.5 W, motor encoders)
 // ============================================================================
 
-constexpr double ARM_REST_DEG = 0;           // MEASURE: arm sensor reading with the arm at rest (start position)
-constexpr double ARM_OUT_DEG = 0;            // MEASURE: reading with the arm out to hit a toggle
-constexpr double ARM_ZERO_TOLERANCE = 5;     // pre-auto check: arm counts as zeroed within this many degrees of rest
+// No arm sensor: the arm motors' own encoders, zeroed when the program starts. So start every
+// match with the arms resting on their hardstop.
+constexpr double ARM_OUT_DEG = 0;            // MEASURE: arm motor degrees from the hardstop to out (shown on the check screen)
 constexpr double ARM_KP = 1.5;               // power (out of 127) per degree of error
 constexpr double ARM_TOLERANCE = 3;          // degrees
 
