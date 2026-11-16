@@ -63,8 +63,8 @@ constexpr float TRACK_WHEEL_DIAMETER = lemlib::Omniwheel::NEW_2; // 2" omnis (2.
 // Offsets from the robot's turning center, inches.
 // Vertical wheel: + = right of center. Horizontal wheel: + = in front of center.
 // Both wheels go as close to the turning center as they fit (less error when turning).
-constexpr float VERTICAL_OFFSET = 0;   // PLANNED: on the center line
-constexpr float HORIZONTAL_OFFSET = -1; // PLANNED: 1" behind the center
+constexpr float VERTICAL_OFFSET = -0.25; // PLANNED: cross-brace hole 15, 0.25" left of the center line
+constexpr float HORIZONTAL_OFFSET = -1;  // PLANNED: drive-rail hole 20, 1" behind the turning center (hole 18)
 
 // If one IMU always reads a little more or less than the other over 10 turns, fix it here
 // (1.0 = no change). Measure: spin 10 full turns by hand, scale = 3600 / reading.
