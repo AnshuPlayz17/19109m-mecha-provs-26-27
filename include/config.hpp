@@ -39,9 +39,9 @@ constexpr std::int8_t TRACK_HORIZONTAL = 13; // rotation sensor, wheel rolls lef
 constexpr std::uint8_t DIST_LEFT = 14;       // wall distance sensors
 constexpr std::uint8_t DIST_RIGHT = 15;
 constexpr std::uint8_t DIST_BACK = 16;
+constexpr std::uint8_t DIST_FRONT = 19;     // (was the cascade rotation sensor: the cascade motors' own encoders do that job)
 constexpr std::uint8_t CLAW_DIST = 17;
 constexpr std::int8_t ARM_ROT = 18;
-constexpr std::int8_t CASCADE_ROT = 19;
 constexpr std::uint8_t CLAW_OPTICAL = 20;
 // port 21: radio
 
@@ -49,6 +49,7 @@ constexpr std::uint8_t CLAW_OPTICAL = 20;
 constexpr char CLAW_PISTON = 'A';     // single-acting, rubber bands return it
 constexpr char PTO_PISTON = 'B';      // single-acting, rubber bands return it
 constexpr char ARM_FLIP_PISTON = 'C'; // double-acting
+constexpr char BALANCER_PISTON = 'D';  // balancers: come out by themselves when the cascade is at the top
 
 // ============================================================================
 // Drive + odometry
@@ -80,6 +81,7 @@ constexpr double IMU_B_SCALE = 1.0;
 constexpr float DIST_LEFT_X = -7.5, DIST_LEFT_Y = 0;   // PLANNED
 constexpr float DIST_RIGHT_X = 7.5, DIST_RIGHT_Y = 0;  // PLANNED
 constexpr float DIST_BACK_X = 0, DIST_BACK_Y = -8.5;   // PLANNED
+constexpr float DIST_FRONT_X = 0, DIST_FRONT_Y = 8.5;  // PLANNED
 constexpr float WALL_RESET_MAX_ANGLE = 8; // only reset if the sensor points within this many degrees of square to the wall
 constexpr float WALL_RESET_MAX_JUMP = 8;  // ignore a reading that moves the robot more than this (it saw a goal, not the wall)
 constexpr int WALL_RESET_MAX_MM = 2000;   // past this the sensor isn't reliable
@@ -89,13 +91,18 @@ constexpr int WALL_RESET_MAX_MM = 2000;   // past this the sensor isn't reliable
 // ============================================================================
 
 constexpr double CASCADE_TRAVEL = 30;        // inches from all the way down to all the way up
-constexpr double CASCADE_IN_PER_DEG = 0;     // MEASURE: inches the claw rises per rotation-sensor degree
+constexpr double CASCADE_IN_PER_DEG = 0;     // MEASURE: inches the claw rises per cascade-motor degree
                                              // (raise to the top, CASCADE_TRAVEL / degrees shown on the screen)
 constexpr double CLAW_HEIGHT_DOWN = 0;       // MEASURE: floor to the bottom of the closed claw, cascade all the way down, in
 constexpr double CASCADE_KP = 25;            // power per inch of error
 constexpr int CASCADE_MIN_POWER = 20;        // enough to move it at all
 constexpr double CASCADE_TOLERANCE = 0.3;    // inches: close enough, hold
 constexpr int CASCADE_HOLD_POWER = 8;        // gentle push up while holding (gravity)
+// Balancers: out when the claw rise reaches BALANCER_OUT_AT, back in below BALANCER_IN_AT
+// (the gap stops them flicking in and out at the top).
+constexpr double BALANCER_OUT_AT = CASCADE_TRAVEL - 1;
+constexpr double BALANCER_IN_AT = CASCADE_TRAVEL - 3;
+constexpr bool BALANCER_OUT_IS_EXTENDED = true; // PLANNED: air pushes them out
 
 // Which way the PTO piston shifts the 3rd motor. PLANNED: piston out = intake, rubber bands
 // pull it back to the cascade. So if the air runs out, the lift still has all 3 motors.

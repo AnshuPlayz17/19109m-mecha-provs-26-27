@@ -55,9 +55,9 @@ const Port PORTS[] = {
 	{DIST_LEFT, pros::DeviceType::distance, "DistL"},
 	{DIST_RIGHT, pros::DeviceType::distance, "DistR"},
 	{DIST_BACK, pros::DeviceType::distance, "DistB"},
+	{DIST_FRONT, pros::DeviceType::distance, "DistF"},
 	{CLAW_DIST, pros::DeviceType::distance, "ClawDist"},
 	{std::abs(ARM_ROT), pros::DeviceType::rotation, "ArmRot"},
-	{std::abs(CASCADE_ROT), pros::DeviceType::rotation, "CascRot"},
 	{CLAW_OPTICAL, pros::DeviceType::optical, "Optical"},
 };
 
@@ -107,8 +107,10 @@ Check checkArm() {
 Check checkCascade() {
 	double in = cascadeInches();
 	if (std::isnan(in)) return {"Cascade: not set up (CASCADE_IN_PER_DEG)", YELLOW};
-	std::snprintf(buf, sizeof buf, "Cascade %.1f in up, PTO on %s", in, intakeMode() ? "intake" : "cascade");
-	return {buf, std::abs(in) < 0.5 ? GREEN : RED};
+	std::snprintf(buf, sizeof buf, "Cascade %.1f in up (%.0f deg), PTO on %s%s", in,
+	              (cascadeMotors.get_position(0) + cascadeMotors.get_position(1)) / 2, intakeMode() ? "intake" : "cascade",
+	              balancersOut() ? ", BALANCERS OUT" : "");
+	return {buf, std::abs(in) < 0.5 && !balancersOut() ? GREEN : RED};
 }
 
 Check checkClaw() {

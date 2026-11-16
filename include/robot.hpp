@@ -34,10 +34,10 @@ extern pros::MotorGroup cascadeMotors; // the 2 that always drive the cascade
 extern pros::Motor ptoMotor;            // the 3rd: cascade or intake
 extern pros::MotorGroup arms;
 extern DualImu imu;
-extern pros::Rotation verticalEnc, horizontalEnc, armRot, cascadeRot;
-extern pros::Distance distLeft, distRight, distBack, clawDist;
+extern pros::Rotation verticalEnc, horizontalEnc, armRot;
+extern pros::Distance distLeft, distRight, distBack, distFront, clawDist;
 extern pros::Optical clawOptical;
-extern pros::adi::Pneumatics clawPiston, ptoPiston, armFlipPiston;
+extern pros::adi::Pneumatics clawPiston, ptoPiston, armFlipPiston, balancerPiston;
 extern lemlib::Chassis chassis;
 extern pros::Controller controller;
 
@@ -60,6 +60,9 @@ void clawHeightTo(double inches);
 bool cascadeWait(int timeout = 2000);
 /** Driver control: drives the cascade at this power (-127..127) and stops any move to a height. */
 void cascadeManual(int power);
+
+/** Whether the balancers are out (they move by themselves with the cascade). */
+bool balancersOut();
 
 // ---- PTO / intake ----
 /** Shifts the 3rd motor: true = intake, false = cascade. Waits for the gears to slide. */

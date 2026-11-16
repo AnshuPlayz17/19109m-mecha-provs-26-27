@@ -80,13 +80,13 @@ DualImu imu(IMU_A, IMU_B);
 pros::Rotation verticalEnc(TRACK_VERTICAL);
 pros::Rotation horizontalEnc(TRACK_HORIZONTAL);
 pros::Rotation armRot(ARM_ROT);
-pros::Rotation cascadeRot(CASCADE_ROT);
-pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distBack(DIST_BACK), clawDist(CLAW_DIST);
+pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distBack(DIST_BACK), distFront(DIST_FRONT), clawDist(CLAW_DIST);
 pros::Optical clawOptical(CLAW_OPTICAL);
 
 pros::adi::Pneumatics clawPiston(CLAW_PISTON, false);
 pros::adi::Pneumatics ptoPiston(PTO_PISTON, false);
 pros::adi::Pneumatics armFlipPiston(ARM_FLIP_PISTON, false);
+pros::adi::Pneumatics balancerPiston(BALANCER_PISTON, !BALANCER_OUT_IS_EXTENDED);
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -150,8 +150,24 @@ void cascadePower(int power) {
 	}
 }
 
+std::atomic<bool> balancersAreOut {false};
+
+/** Balancers out at the top of the cascade, in again once it comes down. */
+void updateBalancers() {
+	double in = cascadeInches();
+	bool out = balancersAreOut;
+	if (std::isnan(in)) out = false;
+	else if (in >= BALANCER_OUT_AT) out = true;
+	else if (in < BALANCER_IN_AT) out = false;
+	if (out == balancersAreOut) return;
+	balancersAreOut = out;
+	if (out == BALANCER_OUT_IS_EXTENDED) balancerPiston.extend();
+	else balancerPiston.retract();
+}
+
 void cascadeTask() {
 	while (true) {
+		updateBalancers();
 		if (cascadeAuto && cascadeSetUp()) {
 			double error = cascadeTarget - cascadeInches();
 			if (std::abs(error) < CASCADE_TOLERANCE) {
@@ -173,8 +189,15 @@ void cascadeTask() {
 
 double cascadeInches() {
 	if (!cascadeSetUp()) return NAN;
-	return cascadeRot.get_position() / 100.0 * CASCADE_IN_PER_DEG;
+	// the 2 cascade motors are always on the cascade: their encoders give the height (average of both)
+	double a = cascadeMotors.get_position(0), b = cascadeMotors.get_position(1);
+	if (!good(a) && !good(b)) return NAN; // both unplugged
+	if (!good(a)) a = b;
+	if (!good(b)) b = a;
+	return (a + b) / 2 * CASCADE_IN_PER_DEG;
 }
+
+bool balancersOut() { return balancersAreOut; }
 
 double clawHeight() { return CLAW_HEIGHT_DOWN + cascadeInches(); }
 
@@ -344,6 +367,7 @@ WallReset wallReset() {
 		{&distLeft, DIST_LEFT_X, DIST_LEFT_Y, -90},
 		{&distRight, DIST_RIGHT_X, DIST_RIGHT_Y, 90},
 		{&distBack, DIST_BACK_X, DIST_BACK_Y, 180},
+		{&distFront, DIST_FRONT_X, DIST_FRONT_Y, 0},
 	};
 	lemlib::Pose pose = chassis.getPose();
 	double t = pose.theta * DEG;
@@ -385,7 +409,8 @@ void robotStart() {
 	cascadeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 	ptoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	arms.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
-	cascadeRot.reset_position(); // the cascade starts all the way down
+	cascadeMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+	cascadeMotors.tare_position_all(); // the cascade starts all the way down
 	clawOptical.set_led_pwm(100);
 	pros::Task cascadeLoop(cascadeTask, "cascade");
 	pros::Task armLoop(armTask, "arm");
