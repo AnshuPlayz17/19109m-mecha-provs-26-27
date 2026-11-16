@@ -55,7 +55,7 @@ constexpr char ARM_FLIP_PISTON = 'C'; // double-acting
 // ============================================================================
 
 // 6 x 2.75" omnis (3 per side), all omni, 450 rpm: about 65 in/s top speed
-constexpr float TRACK_WIDTH = 12.5;    // PLANNED: middle of left wheels to middle of right wheels, in
+constexpr float TRACK_WIDTH = 12;      // PLANNED (lowest stable with the cascade + intake): middle of left wheels to middle of right wheels, in
 constexpr float DRIVE_RPM = 450;
 constexpr float HORIZONTAL_DRIFT = 2;  // LemLib: 2 for an all-omni drive
 
