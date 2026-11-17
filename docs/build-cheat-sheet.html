@@ -91,7 +91,7 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
       <li><span class="n">04</span>Sensor map</li>
       <li><span class="n">05</span>Tracking wheels</li>
       <li><span class="n">06</span>Cascade + balancers</li>
-      <li><span class="n">07</span>PTO</li>
+      <li><span class="n">07</span>Cascade + intake motors</li>
       <li><span class="n">08</span>Air</li>
       <li><span class="n">09</span>Wiring + consistency</li>
       <li><span class="n">10</span>Measure and send</li>
@@ -105,9 +105,10 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
       <thead><tr><th>Part</th><th>What</th><th>Power</th></tr></thead>
       <tbody>
         <tr><td>Drive</td><td>4 × 11 W motors, 6 × 2.75" omnis (3 a side), 450 rpm, 12" track width</td><td class="num">44 W</td></tr>
-        <tr><td>Cascade + intake</td><td>3 × 11 W. 2 always on the cascade. A piston PTO moves the 3rd between cascade and intake.</td><td class="num">33 W</td></tr>
+        <tr><td>Cascade</td><td>2 × 11 W on the spool</td><td class="num">22 W</td></tr>
+        <tr><td>Intake</td><td>1 × 11 W, its own motor (no PTO)</td><td class="num">11 W</td></tr>
         <tr><td>Toggle arm</td><td>1 × 11 W. Starts every match on its hardstop.</td><td class="num">11 W</td></tr>
-        <tr><td>Pistons</td><td>Claw, PTO, balancers (single-acting) · arm flip (double-acting)</td><td class="num">air</td></tr>
+        <tr><td>Pistons</td><td>Claw, balancers (single-acting) · arm flip (double-acting)</td><td class="num">air</td></tr>
         <tr><td>Sensors</td><td>12 (see 04)</td><td class="num">—</td></tr>
       </tbody>
       <tfoot><tr><td>Total</td><td>8 motors + 12 sensors + radio = all 21 ports</td><td class="num">88 W</td></tr></tfoot>
@@ -362,32 +363,32 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
 
   <!-- 07 -->
   <section>
-    <h2><span class="n">07</span>PTO (3rd motor: cascade or intake)</h2>
+    <h2><span class="n">07</span>Cascade + intake motors</h2>
     <div class="cols">
-      <div class="fig"><svg viewBox="0 0 460 220" role="img" aria-label="PTO: the 3rd motor's sliding gear goes to the cascade gear when the rubber bands pull it back, and to the intake gear when the piston pushes it out">
-        <defs><marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#111"/></marker></defs>
-        <rect x="20" y="82" width="74" height="50" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
-        <text x="57" y="112" text-anchor="middle" class="b">motor 3</text>
-        <line x1="94" y1="107" x2="360" y2="107" stroke="var(--ink)" stroke-width="3"/>
-        <text x="330" y="100" class="g">shaft</text>
-        <rect x="190" y="82" width="22" height="50" rx="2" fill="var(--ink)"/>
-        <text x="201" y="152" text-anchor="middle" class="b">sliding gear</text>
-        <rect x="138" y="30" width="22" height="40" rx="2" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
-        <text x="149" y="22" text-anchor="middle" class="b">CASCADE</text>
-        <rect x="242" y="30" width="22" height="40" rx="2" fill="var(--tint)" stroke="var(--ink)" stroke-width="2"/>
-        <text x="253" y="22" text-anchor="middle" class="b">INTAKE</text>
-        <path d="M186 120 L166 120" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="5 3" marker-end="url(#arw)"/>
-        <path d="M216 120 L236 120" stroke="var(--ink)" stroke-width="2.5" marker-end="url(#arw)"/>
-        <path d="M20 182 H48" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="5 3"/>
-        <text x="56" y="186">No air: bands pull it to the CASCADE (3-motor lift)</text>
-        <path d="M20 204 H48" stroke="var(--ink)" stroke-width="2.5"/>
-        <text x="56" y="208">Air: the piston pushes it to the INTAKE</text>
+      <div class="fig"><svg viewBox="0 0 460 220" role="img" aria-label="Two 11 watt motors drive the cascade spool on one shaft; a separate 11 watt motor drives the intake">
+        <rect x="20" y="40" width="74" height="44" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+        <text x="57" y="67" text-anchor="middle" class="b">11 W</text>
+        <rect x="20" y="100" width="74" height="44" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+        <text x="57" y="127" text-anchor="middle" class="b">11 W</text>
+        <path d="M94 62 H140 V92 M94 122 H140 V92 H180" stroke="var(--ink)" stroke-width="3" fill="none"/>
+        <circle cx="200" cy="92" r="20" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/>
+        <circle cx="200" cy="92" r="5" fill="var(--ink)"/>
+        <text x="200" y="134" text-anchor="middle" class="b">spool</text>
+        <text x="200" y="149" text-anchor="middle" class="g">+ rotation sensor</text>
+        <path d="M220 92 H250" class="lead"/><text x="256" y="88" class="b">CASCADE · 22 W</text><text x="256" y="103" class="g">both motors on one shaft</text>
+        <line x1="20" y1="170" x2="440" y2="170" stroke="var(--rule)"/>
+        <rect x="20" y="180" width="74" height="34" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+        <text x="57" y="202" text-anchor="middle" class="b">11 W</text>
+        <path d="M94 197 H180" stroke="var(--ink)" stroke-width="3"/>
+        <rect x="180" y="184" width="40" height="26" rx="3" fill="var(--tint)" stroke="var(--ink)" stroke-width="2"/>
+        <text x="256" y="195" class="b">INTAKE · 11 W</text><text x="256" y="210" class="g">its own motor</text>
       </svg></div>
       <ul class="chk">
-        <li>With no air it sits on the cascade, so the lift still has all 3 motors if the air runs out.</li>
-        <li>The gear slides fully onto one side or the other, never half-meshed.</li>
-        <li>The code stops motor 3 before it shifts. A shift takes about 0.15 s.</li>
-        <li>The other 2 cascade motors hold the height while the intake runs.</li>
+        <li>Both cascade motors on the same shaft (or geared together) so they can't fight each other.</li>
+        <li>Only 22 W lifts the cascade now: gear it slower than you would with 3 motors, or it may stall with a tall stack.</li>
+        <li>Lift the heaviest real load (claw + a full stack) all the way up before building the rest.</li>
+        <li>The cascade holds its height on its own when the motors brake. If it slides down, add rubber bands to help it.</li>
+        <li>The intake runs any time, even while the cascade moves.</li>
       </ul>
     </div>
   </section>
@@ -395,7 +396,7 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
   <!-- 08 -->
   <section>
     <h2><span class="n">08</span>Air</h2>
-    <div class="fig wide"><svg viewBox="0 0 900 260" role="img" aria-label="Air: fill valve to tank A to tank B to the gauge, then a manifold to 4 solenoids, each next to its piston: claw, PTO, balancers, arm flip">
+    <div class="fig wide"><svg viewBox="0 0 900 260" role="img" aria-label="Air: fill valve to tank A to tank B to the gauge, then a manifold to 3 solenoids, each next to its piston: claw, balancers, arm flip">
       <rect x="10" y="104" width="58" height="34" rx="5" fill="var(--tint)" stroke="var(--ink)" stroke-width="2"/>
       <text x="39" y="158" text-anchor="middle">fill valve</text>
       <path d="M68 121 H96" stroke="var(--ink)" stroke-width="5"/>
@@ -409,30 +410,27 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
       <path d="M410 72 L421 62" stroke="var(--ink)" stroke-width="2.5"/>
       <path d="M410 92 V121" stroke="var(--ink)" stroke-width="5"/>
       <text x="410" y="42" text-anchor="middle">gauge</text>
-      <path d="M470 38 V222" stroke="var(--ink)" stroke-width="5"/>
-      <g stroke="var(--ink)" stroke-width="5"><path d="M470 38 H560"/><path d="M470 100 H560"/><path d="M470 160 H560"/><path d="M470 222 H560"/></g>
+      <path d="M470 40 V200" stroke="var(--ink)" stroke-width="5"/>
+      <g stroke="var(--ink)" stroke-width="5"><path d="M470 40 H560"/><path d="M470 120 H560"/><path d="M470 200 H560"/></g>
       <g fill="var(--tint)" stroke="var(--ink)" stroke-width="2">
-        <rect x="560" y="23" width="84" height="30" rx="4"/><rect x="560" y="85" width="84" height="30" rx="4"/>
-        <rect x="560" y="145" width="84" height="30" rx="4"/><rect x="560" y="207" width="84" height="30" rx="4"/>
+        <rect x="560" y="25" width="84" height="30" rx="4"/><rect x="560" y="105" width="84" height="30" rx="4"/><rect x="560" y="185" width="84" height="30" rx="4"/>
       </g>
-      <g text-anchor="middle"><text x="602" y="43">solenoid</text><text x="602" y="105">solenoid</text><text x="602" y="165">solenoid</text><text x="602" y="227">solenoid</text></g>
-      <g stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3"><path d="M644 38 H672"/><path d="M644 100 H672"/><path d="M644 160 H672"/><path d="M644 216 H672"/><path d="M644 228 H672"/></g>
+      <g text-anchor="middle"><text x="602" y="45">solenoid</text><text x="602" y="125">solenoid</text><text x="602" y="205">solenoid</text></g>
+      <g stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3"><path d="M644 40 H672"/><path d="M644 120 H672"/><path d="M644 194 H672"/><path d="M644 206 H672"/></g>
       <g fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5">
-        <rect x="672" y="27" width="56" height="22" rx="3"/><rect x="672" y="89" width="56" height="22" rx="3"/>
-        <rect x="672" y="149" width="56" height="22" rx="3"/><rect x="672" y="211" width="56" height="22" rx="3"/>
+        <rect x="672" y="29" width="56" height="22" rx="3"/><rect x="672" y="109" width="56" height="22" rx="3"/><rect x="672" y="189" width="56" height="22" rx="3"/>
       </g>
-      <text x="740" y="37" class="b">Claw</text><text x="740" y="52" class="g">single-acting</text>
-      <text x="740" y="99" class="b">PTO</text><text x="740" y="114" class="g">single-acting</text>
-      <text x="740" y="159" class="b">Balancers</text><text x="740" y="174" class="g">single-acting</text>
-      <text x="740" y="221" class="b">Arm flip</text><text x="740" y="236" class="g">double-acting (2 tubes)</text>
+      <text x="740" y="39" class="b">Claw</text><text x="740" y="54" class="g">single-acting</text>
+      <text x="740" y="119" class="b">Balancers</text><text x="740" y="134" class="g">single-acting</text>
+      <text x="740" y="199" class="b">Arm flip</text><text x="740" y="214" class="g">double-acting (2 tubes)</text>
       <text x="530" y="254" text-anchor="middle" class="g">solid = supply tube (any length) · dashed = solenoid to piston (a few inches)</text>
     </svg></div>
     <div class="cols">
       <ul class="chk">
-        <li>Fill valve → Tank A → Tank B → gauge → the 4 solenoids.</li>
+        <li>Fill valve → Tank A → Tank B → gauge → the 3 solenoids.</li>
         <li>Pump to the game manual's limit before every match.</li>
         <li>Each solenoid right next to its piston, so that tube is only a few inches.</li>
-        <li>Single-acting pistons (claw, PTO, balancers): plug the solenoid's second port. Bands return them.</li>
+        <li>Single-acting pistons (claw, balancers): plug the solenoid's second port. Bands return them.</li>
       </ul>
       <ul class="chk">
         <li>Gauge where you can read it from outside the robot.</li>
@@ -500,7 +498,7 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
         <tr><td>Toggle arm out</td><td>Degrees on the check screen with the arm out</td><td class="blank"></td></tr>
         <tr><td>Optical hue, red toggle</td><td>Front / left / right</td><td class="blank"></td></tr>
         <tr><td>Optical hue, blue toggle</td><td>Front / left / right</td><td class="blank"></td></tr>
-        <tr><td>Piston directions</td><td>Claw, PTO, balancers: what does air do?</td><td class="blank"></td></tr>
+        <tr><td>Piston directions</td><td>Claw, balancers: what does air do?</td><td class="blank"></td></tr>
         <tr><td>Ports</td><td>Which port each motor and sensor is in (a photo of the labels works)</td><td class="blank"></td></tr>
       </tbody>
     </table></div>

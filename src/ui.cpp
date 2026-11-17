@@ -45,7 +45,7 @@ const Port PORTS[] = {
 	{std::abs(RIGHT_BACK), pros::DeviceType::motor, "RB"},
 	{std::abs(CASCADE_A), pros::DeviceType::motor, "CascA"},
 	{std::abs(CASCADE_B), pros::DeviceType::motor, "CascB"},
-	{std::abs(PTO_MOTOR), pros::DeviceType::motor, "PTO"},
+	{std::abs(INTAKE_MOTOR), pros::DeviceType::motor, "Intake"},
 	{std::abs(ARM_MOTOR), pros::DeviceType::motor, "Arm"},
 	{IMU_A, pros::DeviceType::imu, "IMU A"},
 	{IMU_B, pros::DeviceType::imu, "IMU B"},
@@ -107,8 +107,7 @@ Check checkArm() {
 Check checkCascade() {
 	double in = cascadeInches();
 	if (std::isnan(in)) return {"Cascade: not set up (CASCADE_IN_PER_DEG)", YELLOW};
-	std::snprintf(buf, sizeof buf, "Cascade %.1f in up (%.0f deg), PTO on %s%s", in,
-	              cascadeRot.get_position() / 100.0, intakeMode() ? "intake" : "cascade",
+	std::snprintf(buf, sizeof buf, "Cascade %.1f in up (%.0f deg)%s", in, cascadeRot.get_position() / 100.0,
 	              balancersOut() ? ", BALANCERS OUT" : "");
 	return {buf, std::abs(in) < 0.5 && !balancersOut() ? GREEN : RED};
 }

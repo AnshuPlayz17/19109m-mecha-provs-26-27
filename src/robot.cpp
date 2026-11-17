@@ -73,7 +73,7 @@ std::int32_t DualImu::tare_heading() const { return set_rotation(0); }
 pros::MotorGroup leftDrive({LEFT_FRONT, LEFT_BACK}, pros::MotorGears::blue);
 pros::MotorGroup rightDrive({RIGHT_FRONT, RIGHT_BACK}, pros::MotorGears::blue);
 pros::MotorGroup cascadeMotors({CASCADE_A, CASCADE_B});
-pros::Motor ptoMotor(PTO_MOTOR);
+pros::Motor intakeMotor(INTAKE_MOTOR);
 pros::Motor arm(ARM_MOTOR);
 
 DualImu imu(IMU_A, IMU_B);
@@ -84,7 +84,6 @@ pros::Distance distLeft(DIST_LEFT), distRight(DIST_RIGHT), distFront(DIST_FRONT)
 pros::Optical frontOptical(FRONT_OPTICAL), leftOptical(LEFT_OPTICAL), rightOptical(RIGHT_OPTICAL);
 
 pros::adi::Pneumatics clawPiston(CLAW_PISTON, false);
-pros::adi::Pneumatics ptoPiston(PTO_PISTON, false);
 pros::adi::Pneumatics armFlipPiston(ARM_FLIP_PISTON, false);
 pros::adi::Pneumatics balancerPiston(BALANCER_PISTON, !BALANCER_OUT_IS_EXTENDED);
 
@@ -128,7 +127,7 @@ void calibrate() {
 }
 
 // ============================================================================
-// Cascade + PTO
+// Cascade + intake
 // ============================================================================
 
 namespace {
@@ -136,18 +135,13 @@ std::atomic<bool> cascadeAuto {false};
 std::atomic<double> cascadeTarget {0};
 std::atomic<int> cascadeManualPower {0};
 std::atomic<bool> cascadeThere {false};
-std::atomic<bool> inIntake {false};
 
 bool cascadeSetUp() { return CASCADE_IN_PER_DEG != 0; }
 
-/** Power to the cascade: the 2 cascade motors, plus the PTO motor if it's on the cascade. */
+/** Power to the 2 cascade motors (0 = hold). */
 void cascadePower(int power) {
 	if (power == 0) cascadeMotors.brake();
 	else cascadeMotors.move(power);
-	if (!inIntake) {
-		if (power == 0) ptoMotor.brake();
-		else ptoMotor.move(power);
-	}
 }
 
 std::atomic<bool> balancersAreOut {false};
@@ -222,21 +216,9 @@ void cascadeManual(int power) {
 	cascadeManualPower = power;
 }
 
-void setIntakeMode(bool on) {
-	if (on == inIntake) return;
-	ptoMotor.brake();
-	inIntake = on; // the cascade task stops (or starts) driving the PTO motor
-	if (on == PTO_OUT_IS_INTAKE) ptoPiston.extend();
-	else ptoPiston.retract();
-	pros::delay(PTO_SHIFT_MS);
-}
-
-bool intakeMode() { return inIntake; }
-
 void intake(int power) {
-	if (!inIntake) return;
-	if (power == 0) ptoMotor.brake();
-	else ptoMotor.move(power);
+	if (power == 0) intakeMotor.brake();
+	else intakeMotor.move(power);
 }
 
 // ============================================================================
@@ -292,7 +274,6 @@ bool loadFromBack() {
 bool loadFromIntake() {
 	clawOpen(false);
 	cascadeTo(0);
-	setIntakeMode(true);
 	intake(127);
 	bool got = waitForLoad();
 	intake(0);
@@ -300,7 +281,6 @@ bool loadFromIntake() {
 		pros::delay(LOAD_SETTLE_MS);
 		clawClose();
 	}
-	setIntakeMode(false);
 	if (got) cascadeTo(LOAD_LIFT);
 	return got;
 }
@@ -468,7 +448,7 @@ WallReset wallReset() {
 
 void robotStart() {
 	cascadeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
-	ptoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	intakeMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cascadeRot.reset_position(); // the cascade starts all the way down
 	for (pros::Optical* o : {&frontOptical, &leftOptical, &rightOptical}) o->set_led_pwm(100);

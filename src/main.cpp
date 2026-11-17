@@ -39,7 +39,7 @@ constexpr int DEADBAND = 8;
  *   Left stick up/down: drive    Right stick left/right: turn
  *   R1 / R2: cascade up / down (holds when let go)    B: cascade all the way down
  *   L1: claw open / close
- *   L2 (hold): intake in    Down: intake out    Y: PTO 3rd motor -> intake / cascade
+ *   L2 (hold): intake in    Down: intake out
  *   Up: toggle arms out / in    X: arm flip piston
  *   Off the field only: B + Down together runs the picked auto (with the report).
  */
@@ -80,10 +80,8 @@ void opcontrol() {
 			else clawClose(false);
 		}
 
-		// PTO + intake
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) setIntakeMode(!intakeMode());
+		// intake
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-			setIntakeMode(true);
 			intake(127);
 		} else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
 			intake(-127);

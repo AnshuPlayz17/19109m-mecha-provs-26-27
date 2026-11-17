@@ -31,13 +31,13 @@ class DualImu : public pros::Imu {
 
 extern pros::MotorGroup leftDrive, rightDrive;
 extern pros::MotorGroup cascadeMotors; // the 2 that always drive the cascade
-extern pros::Motor ptoMotor;            // the 3rd: cascade or intake
+extern pros::Motor intakeMotor;
 extern pros::Motor arm;
 extern DualImu imu;
 extern pros::Rotation verticalEnc, horizontalEnc, cascadeRot;
 extern pros::Distance distLeft, distRight, distFront, clawDist;
 extern pros::Optical frontOptical, leftOptical, rightOptical;
-extern pros::adi::Pneumatics clawPiston, ptoPiston, armFlipPiston, balancerPiston;
+extern pros::adi::Pneumatics clawPiston, armFlipPiston, balancerPiston;
 extern lemlib::Chassis chassis;
 extern pros::Controller controller;
 
@@ -64,11 +64,8 @@ void cascadeManual(int power);
 /** Whether the balancers are out (they move by themselves with the cascade). */
 bool balancersOut();
 
-// ---- PTO / intake ----
-/** Shifts the 3rd motor: true = intake, false = cascade. Waits for the gears to slide. */
-void setIntakeMode(bool intake);
-bool intakeMode();
-/** Spins the intake (-127..127). Does nothing unless the PTO is on the intake. */
+// ---- intake ----
+/** Spins the intake (-127..127, + = in). */
 void intake(int power);
 
 // ---- claw ----
@@ -82,8 +79,8 @@ bool clawHasPin();
 /** Main way: cascade down, claw open, wait for a load dropped in from the back, close, lift a
  * little. Returns false if nothing came within LOAD_TIMEOUT_MS (claw stays open). */
 bool loadFromBack();
-/** Other way: PTO on the intake, run it until the load reaches the claw, close, PTO back on the
- * cascade. Returns false if nothing came in time. */
+/** Other way: run the intake until the load reaches the claw, then close. Returns false if
+ * nothing came in time. */
 bool loadFromIntake();
 
 // ---- toggle arms ----

@@ -22,10 +22,10 @@ constexpr std::int8_t LEFT_BACK = -2;
 constexpr std::int8_t RIGHT_FRONT = 3;
 constexpr std::int8_t RIGHT_BACK = 4;
 
-// Cascade + intake: 2 motors always on the cascade, the 3rd one shifts with the PTO
+// Cascade: 2 x 11 W (22 W). Intake: its own 11 W motor (no PTO).
 constexpr std::int8_t CASCADE_A = 5;
 constexpr std::int8_t CASCADE_B = -6;
-constexpr std::int8_t PTO_MOTOR = 7;
+constexpr std::int8_t INTAKE_MOTOR = 7;
 
 // Toggle arm: 1 x 11 W
 constexpr std::int8_t ARM_MOTOR = 8;
@@ -47,9 +47,8 @@ constexpr std::uint8_t FRONT_OPTICAL = 20; // toggle optical, front
 
 // Pistons (3-wire ports on the brain)
 constexpr char CLAW_PISTON = 'A';     // single-acting, rubber bands return it
-constexpr char PTO_PISTON = 'B';      // single-acting, rubber bands return it
-constexpr char ARM_FLIP_PISTON = 'C'; // double-acting
-constexpr char BALANCER_PISTON = 'D';  // balancers: come out by themselves when the cascade is at the top
+constexpr char ARM_FLIP_PISTON = 'B'; // double-acting
+constexpr char BALANCER_PISTON = 'C';  // balancers: come out by themselves when the cascade is at the top
 
 // ============================================================================
 // Drive + odometry
@@ -102,11 +101,6 @@ constexpr int CASCADE_HOLD_POWER = 8;        // gentle push up while holding (gr
 constexpr double BALANCER_OUT_AT = CASCADE_TRAVEL - 1;
 constexpr double BALANCER_IN_AT = CASCADE_TRAVEL - 3;
 constexpr bool BALANCER_OUT_IS_EXTENDED = true; // PLANNED: air pushes them out
-
-// Which way the PTO piston shifts the 3rd motor. PLANNED: piston out = intake, rubber bands
-// pull it back to the cascade. So if the air runs out, the lift still has all 3 motors.
-constexpr bool PTO_OUT_IS_INTAKE = true;
-constexpr int PTO_SHIFT_MS = 150;            // time for the gears to slide over
 
 // ============================================================================
 // Claw
