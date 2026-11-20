@@ -27,50 +27,60 @@ REACH = 12.8  # robot center to the claw's target (body 8.9 + goal radius 3.5)
 def back(target, h):  # robot center for backing onto `target` with heading h (back faces the target)
     tx, ty = target
     return (round(tx + REACH * math.sin(math.radians(h)), 1), round(ty + REACH * math.cos(math.radians(h)), 1))
-PINS = {"A": (-67.6, 22.1), "D": (21.5, -66.8), "B": (-21.5, -66.8), "C": (-67.6, -22.1)}
-STACKS = {"FS": (-T, -T), "CS": (-2 * T, -2 * T)}
-def N(target, h, act, text, extra):
-    x_, y_ = back(target, h); return (x_, y_, h, act, text, extra)
+STACKS = {"FS": (-T, -T), "CS": (-2 * T, -2 * T), "A": (-67.6, 22.1), "D": (21.5, -66.8), "B": (-21.5, -66.8), "C": (-67.6, -22.1)}
+# clusters: a cup in the middle, 4 bare pins around it (5" out)
+CL = {"KL": (-T, T), "KB": (T, -T)}
+CPINS = {}
+for kname, (kx, ky) in CL.items():
+    for side, (ox, oy) in {"W": (-5, 0), "E": (5, 0), "S": (0, -5), "N": (0, 5)}.items():
+        CPINS[kname + side] = (kx + ox, ky + oy)
+PINS = {}
+def N(target, h, act, text, extra=None):
+    tgt = GOALS.get(target) or STACKS.get(target) or CPINS.get(target)
+    x_, y_ = back(tgt, h); return (x_, y_, h, act, text, extra if extra else target)
 R = [
- (-60, 0, 180, "start", "Start at the wall toggle, preload (bare) in the claw", None),
+ (-60, 0, 180, "start", "Start at the wall toggle, preload (bare pin) in the claw", None),
  (-60, 0, 180, "arm", "Small lift: wall toggle flips", None),
- N(GOALS["LS"], 180, "score", "Curve back onto the left short goal: PRELOAD", "LS"),
+ N("LS", 180, "score", "Curve back onto the left short goal: PRELOAD (1st)"),
  (-52.5, -0.5, 150, "stop", "Pull forward off the goal", None),
- N(PINS["A"], 135, "pick", "Curve back onto WALL PIN A, grab", "A"),
- (-47.6, 1.5, 180, "stop", "Forward, above Red Goal 2", None),
- N(GOALS["G2"], 0, "score", "Back onto Red Goal 2: wall pin A (1st)", "G2"),
+ N("A", 135, "grab", "Curve back onto WALL STACK A, grab"),
+ (-52, 2, 170, "stop", "Forward off the wall", None),
+ N("LS", 180, "score", "Back onto the left short goal: wall stack A (2nd)"),
+ (-30, -2, 180, "stop", "Forward, under the cluster", None),
+ N("KLS", 180, "pick", "Back onto the CLUSTER's bottom pin (bare)"),
+ (-40, 2, 270, None, "Forward, curving left", None),
+ (-47.6, 4, 0, "stop", "Above Red Goal 2", None),
+ N("G2", 0, "score", "Back onto Red Goal 2: cluster pin (1st, bare)"),
+ (-48, -4, 40, "stop", "Pull forward off the goal", None),
+ N("C", 55, "grab", "Back onto WALL STACK C, grab"),
+ (-48, -4, 40, "stop", "Forward off the wall", None),
+ N("G2", 0, "score", "Back onto Red Goal 2: wall stack C (2nd)"),
  (-23.8, 0, 0, "stop", "Curve up and over, above the field stack", None),
- N(STACKS["FS"], 0, "grab", "Back SLOWLY onto the FIELD STACK, grab", "FS"),
- N(GOALS["G2"], 90, "score", "Curve back onto Red Goal 2: field stack (2nd)", "G2"),
- (-24, -30, 135, "stop", "Pull forward off Red Goal 2", None),
- N(STACKS["CS"], 45, "grab", "Curve back onto the CORNER STACK, grab", "CS"),
- N(GOALS["G2"], 180, "score", "Back onto Red Goal 2: corner stack (3rd)", "G2"),
- (-47.6, -40, 180, "stop", "Pull forward off the goal", None),
+ N("FS", 0, "grab", "Back SLOWLY onto the FIELD STACK, grab"),
+ N("G2", 90, "score", "Curve back onto Red Goal 2: field stack (3rd)"),
+ (-24, -30, 135, "stop", "Pull forward off the goal", None),
+ N("CS", 45, "grab", "Curve back onto the CORNER STACK, grab"),
+ N("G2", 180, "score", "Back onto Red Goal 2: corner stack (4th)"),
+ (-47.6, -42, 180, "stop", "Pull forward off the goal", None),
+ (LD[0], LD[1], 90, "load", "Back onto the loader: LOAD 1 (bare pin)", None),
+ N("G3", 270, "score", "Turn, back onto Red Goal 3: load 1 (1st, bare)"),
+]
+NLOADS = 4
+for n in range(2, 2 + NLOADS):
+    R.append((-42, -47.6, 270, "stop", "Pull forward off the goal", None) if R[-1][5] == "G3" else (-47.6, -42, 180, "stop", "Pull forward off the goal", None))
+    R.append((LD[0], LD[1], 90, "load", f"Back onto the loader: LOAD {n} (cup + pin)", None))
+    if n % 2 == 1: R.append(N("G2", 180, "score", f"Turn, back up onto Red Goal 2: load {n}"))
+    else: R.append(N("G3", 270, "score", f"Turn, back onto Red Goal 3: load {n}"))
+R += [
  (-24, -31, 100, None, "Curve right, above Red Goal 3", None),
  (0, -57.5, 180, "arm", "Small lift near the wall: bottom toggle flips", None),
- N(PINS["D"], 325, "pick", "Back onto WALL PIN D, grab", "D"),
- N(GOALS["BR"], 270, "score", "Curve back onto the bottom-right short goal: pin D", "BR"),
- (-3, -45, 270, "stop", "Forward toward Red Goal 3", None),
- N(PINS["B"], 35, "pick", "Curve back onto WALL PIN B, grab", "B"),
- N(GOALS["G3"], 90, "score", "Back onto Red Goal 3: wall pin B (1st)", "G3"),
- (-24, -60.6, 90, None, "Back along the wall, under Red Goal 3", None),
- (LD[0], LD[1], 90, "load", "Onto the loader: LOAD 1", None),
-]
-for n in range(1, 7):
-    if n > 1: R.append((LD[0], LD[1], 90, "load", f"Back onto the loader: LOAD {n}", None))
-    if n <= 4:
-        R.append(N(GOALS["G2"], 180, "score", f"Turn, back up onto Red Goal 2: load {n}", "G2"))
-        R.append((-47.6, -42, 180, "stop", "Pull forward off the goal", None))
-    else:
-        R.append(N(GOALS["G3"], 270, "score", f"Turn, back onto Red Goal 3: load {n}", "G3"))
-        if n < 6: R.append((-42, -47.6, 270, "stop", "Pull forward off the goal", None))
-R += [
- (-42, -47.6, 270, "stop", "Pull forward off the goal", None),
- (-34, -24, 0, None, "Up the lane past Red Goal 2", None),
- (-50, -2, 315, "stop", "Above wall pin C", None),
- N(PINS["C"], 55, "pick", "Back onto WALL PIN C, grab", "C"),
- (-46, -5, 60, "stop", "Forward off the wall", None),
- N(GOALS["TALL"], 225, "tall", "Curve back onto the TALL GOAL: pin C, PARK", "TALL"),
+ N("KBW", 270, "pick", "Back onto the CLUSTER's left pin (bare)"),
+ (3, -33, 200, "stop", "Forward out of the cluster", None),
+ N("BR", 270, "score", "Back onto the bottom-right short goal: cluster pin (1st)"),
+ (2, -45, 270, "stop", "Pull forward off the goal", None),
+ N("D", 325, "grab", "Back onto WALL STACK D, grab"),
+ N("BR", 270, "score", "Back onto the bottom-right short goal: wall stack D (2nd)"),
+ (-6, -20, 20, "park", "Drive into the midfield: PARK", None),
 ]
 GRABS = [i for i, r in enumerate(R) if r[3] == "grab"]
 PICKS = [i for i, r in enumerate(R) if r[3] == "pick"]
@@ -196,13 +206,14 @@ TOTAL = sum(sd[0] for sd in segs)
 def crash_check():
     obst = [(gx, gy, 4.5 if g == "TALL" else 3.5, g) for g, (gx, gy) in GOALS.items()]
     obst += [(2 * T, T, 3.5, "blue goal"), (T, 2 * T, 3.5, "blue goal"), (-T, 2 * T, 3.5, "top short"), (2 * T, -T, 3.5, "right short")]
-    for cx_, cy_ in [(-2 * T, 2 * T), (-T, T), (T, -T), (2 * T, -2 * T)]: obst.append((cx_, cy_, 6.8, "pin cluster"))
+    for cx_, cy_ in [(-2 * T, 2 * T), (2 * T, -2 * T)]: obst.append((cx_, cy_, 6.8, "pin cluster"))
+    for n_, (cx_, cy_) in CL.items(): obst.append((cx_, cy_, 2.8, "cluster cup"))
     for px, py in [(T, T), (2 * T, 2 * T), (67.6, 22.1), (67.6, -22.1), (-21.5, 66.8), (21.5, 66.8)]: obst.append((px, py, 1.8, "pin"))
     gone = set(); worst = []
     t = 0; problems = []
     for dur, fn, k, ph in segs:
         tgt = R[k][5] if R[k][3] in ("score", "tall", "pick", "grab") else None
-        live = list(obst) + [(px, py, 1.8, n) for n, (px, py) in PINS.items() if n not in gone] + [(px, py, 2.8, n) for n, (px, py) in STACKS.items() if n not in gone]
+        live = list(obst) + [(px, py, 1.8, n) for n, (px, py) in CPINS.items() if n not in gone] + [(px, py, 1.8, n) for n, (px, py) in PINS.items() if n not in gone] + [(px, py, 2.8, n) for n, (px, py) in STACKS.items() if n not in gone]
         for m in range(0, 21):
             xx, yy, hh = fn(m / 20)
             c, s_ = math.cos(math.radians(hh)), math.sin(math.radians(hh))
@@ -219,7 +230,7 @@ def crash_check():
                     wx = xx + cx_ * c + cy_ * s_; wy = yy - cx_ * s_ + cy_ * c
                     if abs(wx) > WALL + 0.01 or abs(wy) > WALL + 0.01:
                         if R[k][3] != "load": problems.append((round(t, 1), R[k][4], "wall", round(WALL - max(abs(wx), abs(wy)), 1)))
-        if ph == "act" and R[k][3] in ("pick", "grab"): gone.add(R[k][5])
+        if ph == "act" and R[k][3] in ("grab", "pick"): gone.add(R[k][5])
         t += dur
     seen = set(); out = []
     for p in problems:
@@ -279,8 +290,8 @@ def field_layer():
     # side panel
     d.rectangle([760, 0, W, H], fill=(255, 255, 255))
     d.line([760, 0, 760, H], fill=(210, 214, 220), width=2)
-    d.text((790, 30), "19109M  ·  Skills path v6 (draft)", font=f_m, fill=(110, 116, 126))
-    d.text((790, 56), "Curved, chained moves", font=f_b, fill=(20, 22, 26))
+    d.text((790, 30), "19109M  ·  Skills path v7 (draft)", font=f_m, fill=(110, 116, 126))
+    d.text((790, 56), "Bare pin first on every goal", font=f_b, fill=(20, 22, 26))
     d.text((1262, 30), "red side · tile 23.8\"", font=f_xs, fill=(110, 116, 126), anchor="ra")
     return im
 
@@ -330,10 +341,14 @@ def frame(t, trail):
         d.ellipse([X - 5, Y - 5, X + 5, Y + 5], fill=(255, 255, 255), outline=(30, 30, 30), width=1)
     def wpin(px, py):
         X, Y = P(px, py); d.ellipse([X - 9, Y - 9, X + 9, Y + 9], fill=(240, 196, 40), outline=(30, 30, 30), width=1)
-    for k, (px, py) in zip(PICKS, [(-67.6, 22.1), (21.5, -66.8), (-21.5, -66.8), (-67.6, -22.1)]):
-        if k not in done_steps: wpin(px, py)
-    if GRABS[0] not in done_steps: stack(-T, -T)
-    if GRABS[1] not in done_steps: stack(-2 * T, -2 * T)
+    grabbed = {R[k][5] for k in done_steps if R[k][3] in ("grab", "pick")}
+    for key, (px, py) in CPINS.items():
+        X, Y = P(px, py)
+        if key not in grabbed: d.ellipse([X - 8, Y - 8, X + 8, Y + 8], fill=(240, 196, 40), outline=(30, 30, 30), width=1)
+    for kx, ky in CL.values():
+        X, Y = P(kx, ky); d.ellipse([X - 12, Y - 12, X + 12, Y + 12], fill=(200, 205, 212), outline=(30, 30, 30), width=2)
+    for key, (px, py) in STACKS.items():
+        if key not in grabbed: stack(px, py)
     pts, goals = points_after(done_steps)
     if t >= TOTAL: pts += 8
     for g, (gx, gy) in {"G2": (-2 * T, -T), "G3": (-T, -2 * T), "TALL": (0, 0), "LS": (-2 * T, T), "BR": (T, -2 * T)}.items():
