@@ -18,115 +18,214 @@ f_xs = ImageFont.truetype(F % "Medium", 12)
 
 def P(x, y): return (CX + x * S, CY - y * S)
 
-# ---- route: (x, y, heading, kind, text). kind: start/move/back/slow/toggle/pick/score/grab/end ----
+# ---- v6: curved, chained motion; 10 pts per owned yellow pin half showing; +8 park ----
 T = TILE
-LD = (-56.5, -59.7)  # robot center with its back on the bottom-left match loader
-# 6th field on a scoring step: (goal, pin type on top: yy=20, yr=15, yb=10)
+LD = (-56.5, -59.2)
+GOALS = {"LS": (-2 * T, T), "G2": (-2 * T, -T), "G3": (-T, -2 * T), "BR": (T, -2 * T), "TALL": (0, 0)}
+# (x, y, heading, act, text, extra). act: None = drive through without stopping
+REACH = 12.8  # robot center to the claw's target (body 8.9 + goal radius 3.5)
+def back(target, h):  # robot center for backing onto `target` with heading h (back faces the target)
+    tx, ty = target
+    return (round(tx + REACH * math.sin(math.radians(h)), 1), round(ty + REACH * math.cos(math.radians(h)), 1))
+PINS = {"A": (-67.6, 22.1), "D": (21.5, -66.8), "B": (-21.5, -66.8), "C": (-67.6, -22.1)}
+STACKS = {"FS": (-T, -T), "CS": (-2 * T, -2 * T)}
+def N(target, h, act, text, extra):
+    x_, y_ = back(target, h); return (x_, y_, h, act, text, extra)
 R = [
- (-62.9, 0, 0, "start", "Start at the wall toggle, preload (bare) in the claw"),
- (-62.9, 0, 0, "arm", "Small lift: toggle arm flips the wall toggle"),
- (-47.6, 6, 180, "move", "Line up below the left short goal"),
- (-47.6, 14.8, 180, "score", "PRELOAD on the left short goal (1st, bare)", ("LS", "yy")),
- (-48.7, 8.9, 125, "move", "Line up on yellow wall pin A"),
- (-60.2, 16.9, 125, "pick", "Back onto WALL PIN A, grab (bare)"),
- (-50, -4, 0, "move", "Line up above Red Goal 2"),
- (-47.6, -14.8, 0, "score", "Wall pin A on Red Goal 2 (1st, bare)", ("G2", "yy")),
- (-34, -6, 90, "move", "Forward off the goal, around the stack"),
- (-12.6, -12.6, 45, "move", "Line up, back toward the field stack"),
- (-17.4, -17.4, 45, "grab", "Back SLOWLY onto the FIELD STACK, grab"),
- (-30, -23.8, 270, "move", "Line up right of Red Goal 2, lift"),
- (-38.6, -23.8, 270, "score", "Field stack on Red Goal 2 (2nd)", ("G2", "yy")),
- (-34, -34, 45, "move", "Back toward the corner"),
- (-41.2, -41.2, 45, "grab", "Back SLOWLY onto the CORNER STACK, grab"),
- (-47.6, -40, 180, "move", "Line up below Red Goal 2, lift high"),
- (-47.6, -32.8, 180, "score", "Corner stack on Red Goal 2 (3rd)", ("G2", "yy")),
- (-14, -34, 90, "move", "Over the top of Red Goal 3"),
- (0, -59.5, 90, "move", "Down to the bottom toggle"),
- (0, -59.5, 90, "arm", "Small lift: toggle arm flips the bottom toggle"),
- (8.9, -48.7, 325, "move", "Line up on yellow wall pin D"),
- (16.3, -59.4, 325, "pick", "Back onto WALL PIN D, grab (bare)"),
- (6, -47.6, 270, "move", "Line up left of the short goal"),
- (14.8, -47.6, 270, "score", "Wall pin D on the bottom-right short goal (1st)", ("BR", "yy")),
- (-8.9, -48.7, 35, "move", "Line up on yellow wall pin B"),
- (-16.3, -59.4, 35, "pick", "Back onto WALL PIN B, grab (bare)"),
- (-6, -47.6, 90, "move", "Line up right of Red Goal 3"),
- (-14.8, -47.6, 90, "score", "Wall pin B on Red Goal 3 (1st, bare)", ("G3", "yy")),
- (-4, -60, 90, "move", "Down to the wall lane"),
- (LD[0], LD[1], 90, "load", "Back along the wall onto the loader: LOAD 1"),
- (-40, -47.6, 270, "move", "Turn, line up left of Red Goal 3"),
- (-32.8, -47.6, 270, "score", "Load 1 on Red Goal 3 (2nd)", ("G3", "yr")),
- (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 2"),
- (-40, -47.6, 270, "move", "Line up on Red Goal 3"),
- (-32.8, -47.6, 270, "score", "Load 2 on Red Goal 3 (3rd)", ("G3", "yb")),
- (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 3"),
- (-40, -47.6, 270, "move", "Line up on Red Goal 3, lift high"),
- (-32.8, -47.6, 270, "score", "Load 3 on Red Goal 3 (4th)", ("G3", "yr")),
- (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 4 (yellow + yellow)"),
- (-40, -47.6, 270, "move", "Line up on Red Goal 3, lift"),
- (-32.8, -47.6, 270, "score", "Load 4 on Red Goal 3 (5th, top)", ("G3", "yy")),
- (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 5"),
- (-47.6, -40, 180, "move", "Line up below Red Goal 2, lift high"),
- (-47.6, -32.8, 180, "score", "Load 5 on Red Goal 2 (4th, top)", ("G2", "yr")),
- (-34, -30, 0, "move", "Up past Red Goal 2"),
- (-34, -10, 0, "move", "Up the lane"),
- (-48.7, -8.9, 55, "move", "Line up on yellow wall pin C"),
- (-60.2, -16.9, 55, "pick", "Back onto WALL PIN C, grab (bare)"),
- (-48.7, -8.9, 55, "move", "Out the same way"),
- (-17.4, -17.4, 225, "move", "Across, back toward the tall goal"),
- (-6.4, -6.4, 225, "tall", "Wall pin C on the TALL GOAL (bare), PARK", ("TALL", "yy")),
+ (-60, 0, 180, "start", "Start at the wall toggle, preload (bare) in the claw", None),
+ (-60, 0, 180, "arm", "Small lift: wall toggle flips", None),
+ N(GOALS["LS"], 180, "score", "Curve back onto the left short goal: PRELOAD", "LS"),
+ (-52.5, -0.5, 150, "stop", "Pull forward off the goal", None),
+ N(PINS["A"], 135, "pick", "Curve back onto WALL PIN A, grab", "A"),
+ (-47.6, 1.5, 180, "stop", "Forward, above Red Goal 2", None),
+ N(GOALS["G2"], 0, "score", "Back onto Red Goal 2: wall pin A (1st)", "G2"),
+ (-23.8, 0, 0, "stop", "Curve up and over, above the field stack", None),
+ N(STACKS["FS"], 0, "grab", "Back SLOWLY onto the FIELD STACK, grab", "FS"),
+ N(GOALS["G2"], 90, "score", "Curve back onto Red Goal 2: field stack (2nd)", "G2"),
+ (-24, -30, 135, "stop", "Pull forward off Red Goal 2", None),
+ N(STACKS["CS"], 45, "grab", "Curve back onto the CORNER STACK, grab", "CS"),
+ N(GOALS["G2"], 180, "score", "Back onto Red Goal 2: corner stack (3rd)", "G2"),
+ (-47.6, -40, 180, "stop", "Pull forward off the goal", None),
+ (-24, -31, 100, None, "Curve right, above Red Goal 3", None),
+ (0, -57.5, 180, "arm", "Small lift near the wall: bottom toggle flips", None),
+ N(PINS["D"], 325, "pick", "Back onto WALL PIN D, grab", "D"),
+ N(GOALS["BR"], 270, "score", "Curve back onto the bottom-right short goal: pin D", "BR"),
+ (-3, -45, 270, "stop", "Forward toward Red Goal 3", None),
+ N(PINS["B"], 35, "pick", "Curve back onto WALL PIN B, grab", "B"),
+ N(GOALS["G3"], 90, "score", "Back onto Red Goal 3: wall pin B (1st)", "G3"),
+ (-24, -60.6, 90, None, "Back along the wall, under Red Goal 3", None),
+ (LD[0], LD[1], 90, "load", "Onto the loader: LOAD 1", None),
 ]
-TOPV = {"yy": 20, "yr": 15, "yb": 10}
+for n in range(1, 7):
+    if n > 1: R.append((LD[0], LD[1], 90, "load", f"Back onto the loader: LOAD {n}", None))
+    if n <= 4:
+        R.append(N(GOALS["G2"], 180, "score", f"Turn, back up onto Red Goal 2: load {n}", "G2"))
+        R.append((-47.6, -42, 180, "stop", "Pull forward off the goal", None))
+    else:
+        R.append(N(GOALS["G3"], 270, "score", f"Turn, back onto Red Goal 3: load {n}", "G3"))
+        if n < 6: R.append((-42, -47.6, 270, "stop", "Pull forward off the goal", None))
+R += [
+ (-42, -47.6, 270, "stop", "Pull forward off the goal", None),
+ (-34, -24, 0, None, "Up the lane past Red Goal 2", None),
+ (-50, -2, 315, "stop", "Above wall pin C", None),
+ N(PINS["C"], 55, "pick", "Back onto WALL PIN C, grab", "C"),
+ (-46, -5, 60, "stop", "Forward off the wall", None),
+ N(GOALS["TALL"], 225, "tall", "Curve back onto the TALL GOAL: pin C, PARK", "TALL"),
+]
+GRABS = [i for i, r in enumerate(R) if r[3] == "grab"]
+PICKS = [i for i, r in enumerate(R) if r[3] == "pick"]
+
 def points_after(steps_done):
     goals = {}
     for k in sorted(steps_done):
-        if len(R[k]) > 5 and R[k][5]: goals.setdefault(R[k][5][0], []).append(R[k][5][1])
-    return sum(10 * (len(v) - 1) + TOPV[v[-1]] for v in goals.values()), goals
-GRABS = [i for i, r in enumerate(R) if r[3] == "grab"]
-PICKS = [i for i, r in enumerate(R) if r[3] == "pick"]
-SPEED, SLOW, TURN = 53.0, 14.0, 330.0  # in/s, in/s (slow approach), deg/s
-ACT = {"pick": 0.4, "arm": 0.5, "load": 0.5, "score": 0.8, "grab": 0.6, "tall": 1.1, "move": 0.0, "park": 0.3, "start": 0.6}
+        if R[k][3] in ("score", "tall"): goals.setdefault(R[k][5], []).append(1)
+    return 10 * sum(len(v) for v in goals.values()), goals
 
+VMAX, ACC, TURN = 62.0, 90.0, 360.0
 def wrap(a): return (a + 180) % 360 - 180
+def hv(h): return (math.sin(math.radians(h)), math.cos(math.radians(h)))
+def ang(vx, vy): return math.degrees(math.atan2(vx, vy))
 
-# ---- build a timeline of segments: each returns pose at local t ----
-segs = []  # (duration, func(u)->(x,y,h), step index, phase)
+def act_time(i):
+    a = R[i][3]
+    if a == "score":
+        on = sum(1 for k in range(i) if R[k][3] == "score" and R[k][5] == R[i][5])
+        return 0.45 + 0.08 * on
+    return {"tall": 0.6, "pick": 0.65, "grab": 0.85, "load": 0.5, "arm": 0.35, "stop": 0.05, "start": 0.4}.get(a, 0)
+
+def bez(p0, p1, p2, p3, u):
+    a = (1 - u) ** 3; b = 3 * (1 - u) ** 2 * u; c = 3 * (1 - u) * u * u; d = u ** 3
+    return (a * p0[0] + b * p1[0] + c * p2[0] + d * p3[0], a * p0[1] + b * p1[1] + c * p2[1] + d * p3[1])
+
+segs = []
 x, y, h = R[0][0], R[0][1], R[0][2]
-segs.append((ACT["start"], lambda u, x=x, y=y, h=h: (x, y, h), 0, "wait"))
-for i in range(1, len(R)):
-    nx, ny, nh, kind = R[i][:4]
-    dx, dy = nx - x, ny - y
-    dist = math.hypot(dx, dy)
-    if dist > 0.3:
-        travel = math.degrees(math.atan2(dx, dy))
-        fwd_turn, back_turn = wrap(travel - h), wrap(travel + 180 - h)
-        # drive the way that needs less turning; slow/grab and short moves keep the current heading
-        if dist < 6 or kind in ("grab", "pick", "load"):
-            dh1 = 0.0
-        else:
-            dh1 = fwd_turn if abs(fwd_turn) <= abs(back_turn) else back_turn
-        if abs(dh1) > 1:
-            d = abs(dh1) / TURN
-            segs.append((d, lambda u, x=x, y=y, h=h, dh=dh1: (x, y, h + dh * u), i, "turn"))
-            h = h + dh1
-        sp = SLOW if kind in ("grab", "pick") else SPEED
-        d = dist / sp + 0.15
-        def drive(u, x=x, y=y, dx=dx, dy=dy, h=h):
-            e = u * u * (3 - 2 * u)
-            return (x + dx * e, y + dy * e, h)
-        segs.append((d, drive, i, "drive"))
-        x, y = nx, ny
-    dh2 = wrap(nh - h)
-    if abs(dh2) > 1:
-        d = abs(dh2) / TURN
-        segs.append((d, lambda u, x=x, y=y, h=h, dh=dh2: (x, y, h + dh * u), i, "turn"))
-    h = nh
-    if ACT.get(kind, 0) > 0:
-        segs.append((ACT[kind], lambda u, x=x, y=y, h=h: (x, y, h), i, "act"))
-TOTAL = sum(s[0] for s in segs)
+segs.append((act_time(0), lambda u, x=x, y=y, h=h: (x, y, h), 0, "act"))
+i = 1
+while i < len(R):
+    # a run: consecutive nodes up to (and including) the next stopping node
+    run = []
+    j = i
+    while True:
+        run.append(j)
+        if R[j][3] is not None or j == len(R) - 1: break
+        j += 1
+    curves = []  # (index, polyline [(x,y,h)])
+    cx, cy, ch = x, y, h
+    first = True
+    for k in run:
+        nx, ny, nh = R[k][:3]
+        chord = (nx - cx, ny - cy)
+        L = math.hypot(*chord)
+        if L < 0.3:
+            if abs(wrap(nh - ch)) > 1:
+                segs.append((abs(wrap(nh - ch)) / TURN + 0.05, lambda u, x=cx, y=cy, h=ch, dh=wrap(nh - ch): (x, y, h + dh * u), k, "turn"))
+            ch = nh
+            continue
+        ev = hv(nh)
+        s = 1 if ev[0] * chord[0] + ev[1] * chord[1] >= 0 else -1
+        sv = hv(ch)
+        st = (s * sv[0], s * sv[1])
+        off = math.degrees(math.acos(max(-1, min(1, (st[0] * chord[0] + st[1] * chord[1]) / L))))
+        if off > 75:  # can't curve from here: turn in place toward the chord first
+            want = ang(*chord) if s > 0 else ang(*chord) + 180
+            dh = wrap(want - ch)
+            segs.append((abs(dh) / TURN + 0.05, lambda u, x=cx, y=cy, h=ch, dh=dh: (x, y, h + dh * u), k, "turn"))
+            ch = ch + dh; sv = hv(ch); st = (s * sv[0], s * sv[1])
+        kk = 0.42 * L
+        p0 = (cx, cy); p1 = (cx + st[0] * kk, cy + st[1] * kk)
+        p3 = (nx, ny); p2 = (nx - s * ev[0] * kk, ny - s * ev[1] * kk)
+        pts = []
+        for m in range(81):
+            u = m / 80
+            px, py = bez(p0, p1, p2, p3, u)
+            pts.append((px, py))
+        poly = []
+        for m, (px, py) in enumerate(pts):
+            if m < len(pts) - 1: tx, ty = pts[m + 1][0] - px, pts[m + 1][1] - py
+            else: tx, ty = px - pts[m - 1][0], py - pts[m - 1][1]
+            hh = ang(tx, ty) if s > 0 else ang(tx, ty) + 180
+            poly.append((px, py, hh))
+        curves.append((k, poly))
+        cx, cy, ch = nx, ny, nh
+        first = False
+    # time along the whole run (trapezoid), split per curve
+    lens = []
+    for k, poly in curves:
+        lens.append(sum(math.hypot(poly[m + 1][0] - poly[m][0], poly[m + 1][1] - poly[m][1]) for m in range(len(poly) - 1)))
+    Ltot = sum(lens)
+    if Ltot > 0:
+        da = VMAX * VMAX / ACC
+        if Ltot >= da: Ttot = Ltot / VMAX + VMAX / ACC
+        else: Ttot = 2 * math.sqrt(Ltot / ACC)
+        vpk = min(VMAX, math.sqrt(Ltot * ACC))
+        ta = vpk / ACC
+        def s_at(t, Ltot=Ltot, Ttot=Ttot, vpk=vpk, ta=ta):
+            if t <= ta: return 0.5 * ACC * t * t
+            if t >= Ttot - ta: r = Ttot - t; return Ltot - 0.5 * ACC * r * r
+            return 0.5 * ACC * ta * ta + vpk * (t - ta)
+        def t_at(sv, Ttot=Ttot):
+            lo, hi = 0.0, Ttot
+            for _ in range(40):
+                mid = (lo + hi) / 2
+                if s_at(mid) < sv: lo = mid
+                else: hi = mid
+            return lo
+        s0 = 0
+        for (k, poly), Lc in zip(curves, lens):
+            t0, t1 = t_at(s0), t_at(s0 + Lc)
+            cum = [0]
+            for m in range(len(poly) - 1): cum.append(cum[-1] + math.hypot(poly[m + 1][0] - poly[m][0], poly[m + 1][1] - poly[m][1]))
+            def fn(u, poly=poly, cum=cum, t0=t0, t1=t1, s0=s0):
+                sv = s_at(t0 + u * (t1 - t0)) - s0
+                m = 0
+                while m < len(cum) - 2 and cum[m + 1] < sv: m += 1
+                f = 0 if cum[m + 1] == cum[m] else max(0, min(1, (sv - cum[m]) / (cum[m + 1] - cum[m])))
+                a, b = poly[m], poly[m + 1]
+                dh = wrap(b[2] - a[2])
+                return (a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + dh * f)
+            segs.append((max(0.01, t1 - t0), fn, k, "drive"))
+            s0 += Lc
+    x, y, h = R[run[-1]][:3]
+    last = run[-1]
+    if act_time(last) > 0:
+        segs.append((act_time(last), lambda u, x=x, y=y, h=h: (x, y, h), last, "act"))
+    i = run[-1] + 1
+TOTAL = sum(sd[0] for sd in segs)
+
+# ---- crash check: robot body (15.5 x 17.8) against goals, pins, stacks, clusters, walls ----
+def crash_check():
+    obst = [(gx, gy, 4.5 if g == "TALL" else 3.5, g) for g, (gx, gy) in GOALS.items()]
+    obst += [(2 * T, T, 3.5, "blue goal"), (T, 2 * T, 3.5, "blue goal"), (-T, 2 * T, 3.5, "top short"), (2 * T, -T, 3.5, "right short")]
+    for cx_, cy_ in [(-2 * T, 2 * T), (-T, T), (T, -T), (2 * T, -2 * T)]: obst.append((cx_, cy_, 6.8, "pin cluster"))
+    for px, py in [(T, T), (2 * T, 2 * T), (67.6, 22.1), (67.6, -22.1), (-21.5, 66.8), (21.5, 66.8)]: obst.append((px, py, 1.8, "pin"))
+    gone = set(); worst = []
+    t = 0; problems = []
+    for dur, fn, k, ph in segs:
+        tgt = R[k][5] if R[k][3] in ("score", "tall", "pick", "grab") else None
+        live = list(obst) + [(px, py, 1.8, n) for n, (px, py) in PINS.items() if n not in gone] + [(px, py, 2.8, n) for n, (px, py) in STACKS.items() if n not in gone]
+        for m in range(0, 21):
+            xx, yy, hh = fn(m / 20)
+            c, s_ = math.cos(math.radians(hh)), math.sin(math.radians(hh))
+            for ox, oy, r, name in live:
+                if name == tgt: continue
+                # obstacle in robot frame (x right, y forward)
+                dx, dy = ox - xx, oy - yy
+                rx, ry = dx * c - dy * s_, dx * s_ + dy * c
+                qx, qy = max(abs(rx) - 7.75, 0), max(abs(ry) - 8.9, 0)
+                clear = math.hypot(qx, qy) - r
+                if clear < 0: problems.append((round(t, 1), R[k][4], name, round(clear, 1)))
+            for cx_ in (-7.75, 7.75):
+                for cy_ in (-8.9, 8.9):
+                    wx = xx + cx_ * c + cy_ * s_; wy = yy - cx_ * s_ + cy_ * c
+                    if abs(wx) > WALL + 0.01 or abs(wy) > WALL + 0.01:
+                        if R[k][3] != "load": problems.append((round(t, 1), R[k][4], "wall", round(WALL - max(abs(wx), abs(wy)), 1)))
+        if ph == "act" and R[k][3] in ("pick", "grab"): gone.add(R[k][5])
+        t += dur
+    seen = set(); out = []
+    for p in problems:
+        if (p[1], p[2]) not in seen: seen.add((p[1], p[2])); out.append(p)
+    return out
+
 HOLD = 3.0
 
 # ---- static field layer ----
@@ -180,11 +279,15 @@ def field_layer():
     # side panel
     d.rectangle([760, 0, W, H], fill=(255, 255, 255))
     d.line([760, 0, 760, H], fill=(210, 214, 220), width=2)
-    d.text((790, 30), "19109M  ·  Skills path v5 (draft)", font=f_m, fill=(110, 116, 126))
-    d.text((790, 56), "Loads stacked by the loader", font=f_b, fill=(20, 22, 26))
+    d.text((790, 30), "19109M  ·  Skills path v6 (draft)", font=f_m, fill=(110, 116, 126))
+    d.text((790, 56), "Curved, chained moves", font=f_b, fill=(20, 22, 26))
     d.text((1262, 30), "red side · tile 23.8\"", font=f_xs, fill=(110, 116, 126), anchor="ra")
     return im
 
+if OUT == "check":
+    for pr in crash_check(): print("CRASH", pr)
+    print("total", round(TOTAL, 1), "s  pts", points_after(set(range(len(R))))[0] + 8)
+    sys.exit()
 BASE = field_layer()
 CARRY = []
 _c = False
@@ -252,7 +355,7 @@ def frame(t, trail):
         d.text((790, yy), f"{j:2d}", font=f_xs, fill=(150, 155, 165))
         d.text((818, yy), R[j][4], font=f_m if cur else f_s, fill=col)
         yy += 29
-    d.text((790, 690), "number on a goal = pins on it · points if we own every goal at the end (+8 park)", font=f_xs, fill=(110, 116, 126))
+    d.text((790, 690), "10 pts per owned yellow half showing · +8 park · number on a goal = pins on it", font=f_xs, fill=(110, 116, 126))
     return im
 
 n = int((TOTAL + HOLD) * FPS)
