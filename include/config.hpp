@@ -16,7 +16,7 @@ namespace cfg {
 // Change these to match how the robot is wired. A minus sign reverses a motor or sensor.
 // ============================================================================
 
-// Drive: 4 x 11 W, 450 rpm, 2.75" omnis
+// Drive: 4 x 11 W, 450 rpm, 3.25" omnis
 constexpr std::int8_t LEFT_FRONT = -1;
 constexpr std::int8_t LEFT_BACK = -2;
 constexpr std::int8_t RIGHT_FRONT = 3;
@@ -53,7 +53,7 @@ constexpr char BALANCER_PISTON = 'C';  // balancers: come out by themselves when
 // Drive + odometry
 // ============================================================================
 
-// 6 x 2.75" omnis (3 per side), all omni, 450 rpm: about 65 in/s top speed
+// 6 x 3.25" omnis (3 per side), all omni, 450 rpm: about 77 in/s top speed
 constexpr float TRACK_WIDTH = 12;      // PLANNED (lowest stable with the cascade + intake): middle of left wheels to middle of right wheels, in
 constexpr float DRIVE_RPM = 450;
 constexpr float HORIZONTAL_DRIFT = 2;  // LemLib: 2 for an all-omni drive

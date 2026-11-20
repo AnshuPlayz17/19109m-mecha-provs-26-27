@@ -92,7 +92,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 // LemLib
 // ============================================================================
 
-lemlib::Drivetrain drivetrain(&leftDrive, &rightDrive, TRACK_WIDTH, lemlib::Omniwheel::NEW_275, DRIVE_RPM,
+lemlib::Drivetrain drivetrain(&leftDrive, &rightDrive, TRACK_WIDTH, lemlib::Omniwheel::NEW_325, DRIVE_RPM,
                               HORIZONTAL_DRIFT);
 lemlib::TrackingWheel verticalWheel(&verticalEnc, TRACK_WHEEL_DIAMETER, VERTICAL_OFFSET);
 lemlib::TrackingWheel horizontalWheel(&horizontalEnc, TRACK_WHEEL_DIAMETER, HORIZONTAL_OFFSET);
