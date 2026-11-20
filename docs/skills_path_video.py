@@ -60,19 +60,19 @@ R = [
  (-40, -47.6, 270, "move", "Line up on Red Goal 3"),
  (-32.8, -47.6, 270, "score", "Load 2 on Red Goal 3 (3rd)", ("G3", "yb")),
  (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 3 (yellow + yellow)"),
+ (LD[0], LD[1], 90, "load", "LOAD 3"),
  (-40, -47.6, 270, "move", "Line up on Red Goal 3, lift high"),
- (-32.8, -47.6, 270, "score", "Load 3 on Red Goal 3 (4th, top)", ("G3", "yy")),
+ (-32.8, -47.6, 270, "score", "Load 3 on Red Goal 3 (4th)", ("G3", "yr")),
  (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 4"),
- (-47.6, -40, 180, "move", "Line up below Red Goal 2, lift high"),
- (-47.6, -32.8, 180, "score", "Load 4 on Red Goal 2 (4th, top)", ("G2", "yr")),
+ (LD[0], LD[1], 90, "load", "LOAD 4 (yellow + yellow)"),
+ (-40, -47.6, 270, "move", "Line up on Red Goal 3, lift"),
+ (-32.8, -47.6, 270, "score", "Load 4 on Red Goal 3 (5th, top)", ("G3", "yy")),
  (-44, -59.7, 90, "move", "Back to the loader"),
  (LD[0], LD[1], 90, "load", "LOAD 5"),
- (-34, -40, 180, "move", "Out from the loader"),
- (-34, -2, 180, "move", "Up the lane past Red Goal 2"),
- (-47.6, 6, 180, "move", "Line up below the left short goal, lift"),
- (-47.6, 14.8, 180, "score", "Load 5 on the left short goal (2nd, top)", ("LS", "yr")),
+ (-47.6, -40, 180, "move", "Line up below Red Goal 2, lift high"),
+ (-47.6, -32.8, 180, "score", "Load 5 on Red Goal 2 (4th, top)", ("G2", "yr")),
+ (-34, -30, 0, "move", "Up past Red Goal 2"),
+ (-34, -10, 0, "move", "Up the lane"),
  (-48.7, -8.9, 55, "move", "Line up on yellow wall pin C"),
  (-60.2, -16.9, 55, "pick", "Back onto WALL PIN C, grab (bare)"),
  (-48.7, -8.9, 55, "move", "Out the same way"),
@@ -180,8 +180,8 @@ def field_layer():
     # side panel
     d.rectangle([760, 0, W, H], fill=(255, 255, 255))
     d.line([760, 0, 760, H], fill=(210, 214, 220), width=2)
-    d.text((790, 30), "19109M  ·  Skills path v4 (draft)", font=f_m, fill=(110, 116, 126))
-    d.text((790, 56), "3.25 in wheels: every second used", font=f_b, fill=(20, 22, 26))
+    d.text((790, 30), "19109M  ·  Skills path v5 (draft)", font=f_m, fill=(110, 116, 126))
+    d.text((790, 56), "Loads stacked by the loader", font=f_b, fill=(20, 22, 26))
     d.text((1262, 30), "red side · tile 23.8\"", font=f_xs, fill=(110, 116, 126), anchor="ra")
     return im
 
