@@ -21,47 +21,66 @@ def P(x, y): return (CX + x * S, CY - y * S)
 # ---- route: (x, y, heading, kind, text). kind: start/move/back/slow/toggle/pick/score/grab/end ----
 T = TILE
 LD = (-56.5, -59.7)  # robot center with its back on the bottom-left match loader
+# 6th field on a scoring step: (goal, pin type on top: yy=20, yr=15, yb=10)
 R = [
- (-62.9, 0, 0, "start", "Start along the wall at the toggle, preload in the claw"),
- (-62.9, 0, 0, "arm", "Toggle arm flips the wall toggle"),
- (-47.6, -8, 0, "move", "Line up above Red Goal 2"),
- (-47.6, -14.8, 0, "score", "SCORE the preload on Red Goal 2 (bare pin)"),
+ (-62.9, 0, 0, "start", "Start at the wall toggle, preload (bare) in the claw"),
+ (-62.9, 0, 0, "arm", "Small lift: toggle arm flips the wall toggle"),
+ (-47.6, 6, 180, "move", "Line up below the left short goal"),
+ (-47.6, 14.8, 180, "score", "PRELOAD on the left short goal (1st, bare)", ("LS", "yy")),
+ (-48.7, 8.9, 125, "move", "Line up on yellow wall pin A"),
+ (-60.2, 16.9, 125, "pick", "Back onto WALL PIN A, grab (bare)"),
+ (-50, -4, 0, "move", "Line up above Red Goal 2"),
+ (-47.6, -14.8, 0, "score", "Wall pin A on Red Goal 2 (1st, bare)", ("G2", "yy")),
  (-34, -6, 90, "move", "Forward off the goal, around the stack"),
  (-12.6, -12.6, 45, "move", "Line up, back toward the field stack"),
  (-17.4, -17.4, 45, "grab", "Back SLOWLY onto the FIELD STACK, grab"),
- (-17.4, -17.4, 225, "move", "Turn around, lift to tall-goal height"),
- (-6.4, -6.4, 225, "tall", "SCORE the field stack on the TALL GOAL"),
- (-34, -34, 45, "move", "Down the diagonal, back toward the corner"),
+ (-30, -23.8, 270, "move", "Line up right of Red Goal 2, lift"),
+ (-38.6, -23.8, 270, "score", "Field stack on Red Goal 2 (2nd)", ("G2", "yy")),
+ (-34, -34, 45, "move", "Back toward the corner"),
  (-41.2, -41.2, 45, "grab", "Back SLOWLY onto the CORNER STACK, grab"),
- (-47.6, -40, 180, "move", "Line up below Red Goal 2"),
- (-47.6, -32.8, 180, "score", "SCORE the corner stack on Red Goal 2 (2nd)"),
+ (-47.6, -40, 180, "move", "Line up below Red Goal 2, lift high"),
+ (-47.6, -32.8, 180, "score", "Corner stack on Red Goal 2 (3rd)", ("G2", "yy")),
  (-14, -34, 90, "move", "Over the top of Red Goal 3"),
- (0, -59.5, 90, "move", "Down to the bottom toggle, arm side to the wall"),
- (0, -59.5, 90, "arm", "Toggle arm flips the bottom toggle"),
- (-12, -36, 225, "move", "Back up off the wall"),
- (-34, -32, 225, "move", "Around the top of Red Goal 3"),
- (-44, -59.7, 90, "move", "Line up with the match loader"),
- (LD[0], LD[1], 90, "load", "Back onto the loader: LOAD 1 drops in, lift"),
- (-40, -47.6, 270, "move", "Turn around, line up on Red Goal 3"),
- (-32.8, -47.6, 270, "score", "SCORE load 1 on Red Goal 3 (bare pin)"),
+ (0, -59.5, 90, "move", "Down to the bottom toggle"),
+ (0, -59.5, 90, "arm", "Small lift: toggle arm flips the bottom toggle"),
+ (8.9, -48.7, 325, "move", "Line up on yellow wall pin D"),
+ (16.3, -59.4, 325, "pick", "Back onto WALL PIN D, grab (bare)"),
+ (6, -47.6, 270, "move", "Line up left of the short goal"),
+ (14.8, -47.6, 270, "score", "Wall pin D on the bottom-right short goal (1st)", ("BR", "yy")),
+ (-8.9, -48.7, 35, "move", "Line up on yellow wall pin B"),
+ (-16.3, -59.4, 35, "pick", "Back onto WALL PIN B, grab (bare)"),
+ (-6, -47.6, 90, "move", "Line up right of Red Goal 3"),
+ (-14.8, -47.6, 90, "score", "Wall pin B on Red Goal 3 (1st, bare)", ("G3", "yy")),
+ (-4, -60, 90, "move", "Down to the wall lane"),
+ (LD[0], LD[1], 90, "load", "Back along the wall onto the loader: LOAD 1"),
+ (-40, -47.6, 270, "move", "Turn, line up left of Red Goal 3"),
+ (-32.8, -47.6, 270, "score", "Load 1 on Red Goal 3 (2nd)", ("G3", "yr")),
  (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 2 drops in, lift"),
+ (LD[0], LD[1], 90, "load", "LOAD 2"),
  (-40, -47.6, 270, "move", "Line up on Red Goal 3"),
- (-32.8, -47.6, 270, "score", "SCORE load 2 on Red Goal 3 (2nd)"),
+ (-32.8, -47.6, 270, "score", "Load 2 on Red Goal 3 (3rd)", ("G3", "yb")),
  (-44, -59.7, 90, "move", "Back to the loader"),
- (LD[0], LD[1], 90, "load", "LOAD 3 drops in, lift high"),
- (-40, -47.6, 270, "move", "Line up on Red Goal 3"),
- (-32.8, -47.6, 270, "score", "SCORE load 3 on Red Goal 3 (3rd, from the top)"),
- (-36, -34, 45, "move", "Out around Red Goal 3"),
- (-8, -8, 45, "park", "PARK in the midfield"),
+ (LD[0], LD[1], 90, "load", "LOAD 3 (yellow + yellow)"),
+ (-40, -47.6, 270, "move", "Line up on Red Goal 3, lift high"),
+ (-32.8, -47.6, 270, "score", "Load 3 on Red Goal 3 (4th, top)", ("G3", "yy")),
+ (-34, -30, 0, "move", "Up past Red Goal 2"),
+ (-34, -10, 0, "move", "Up the lane"),
+ (-48.7, -8.9, 55, "move", "Line up on yellow wall pin C"),
+ (-60.2, -16.9, 55, "pick", "Back onto WALL PIN C, grab (bare)"),
+ (-48.7, -8.9, 55, "move", "Out the same way"),
+ (-17.4, -17.4, 225, "move", "Across, back toward the tall goal"),
+ (-6.4, -6.4, 225, "tall", "Wall pin C on the TALL GOAL (bare), PARK", ("TALL", "yy")),
 ]
-GOAL_OF = {}
-for _i, _r in enumerate(R):
-    if _r[3] == "tall": GOAL_OF[_i] = "TALL"
-    elif _r[3] == "score": GOAL_OF[_i] = "G2" if "Goal 2" in _r[4] else "G3"
+TOPV = {"yy": 20, "yr": 15, "yb": 10}
+def points_after(steps_done):
+    goals = {}
+    for k in sorted(steps_done):
+        if len(R[k]) > 5 and R[k][5]: goals.setdefault(R[k][5][0], []).append(R[k][5][1])
+    return sum(10 * (len(v) - 1) + TOPV[v[-1]] for v in goals.values()), goals
 GRABS = [i for i, r in enumerate(R) if r[3] == "grab"]
+PICKS = [i for i, r in enumerate(R) if r[3] == "pick"]
 SPEED, SLOW, TURN = 45.0, 14.0, 330.0  # in/s, in/s (slow approach), deg/s
-ACT = {"arm": 0.4, "load": 0.5, "score": 0.8, "grab": 0.6, "tall": 1.1, "move": 0.0, "park": 0.3, "start": 0.6}
+ACT = {"pick": 0.4, "arm": 0.5, "load": 0.5, "score": 0.8, "grab": 0.6, "tall": 1.1, "move": 0.0, "park": 0.3, "start": 0.6}
 
 def wrap(a): return (a + 180) % 360 - 180
 
@@ -70,14 +89,14 @@ segs = []  # (duration, func(u)->(x,y,h), step index, phase)
 x, y, h = R[0][0], R[0][1], R[0][2]
 segs.append((ACT["start"], lambda u, x=x, y=y, h=h: (x, y, h), 0, "wait"))
 for i in range(1, len(R)):
-    nx, ny, nh, kind, _ = R[i]
+    nx, ny, nh, kind = R[i][:4]
     dx, dy = nx - x, ny - y
     dist = math.hypot(dx, dy)
     if dist > 0.3:
         travel = math.degrees(math.atan2(dx, dy))
         fwd_turn, back_turn = wrap(travel - h), wrap(travel + 180 - h)
         # drive the way that needs less turning; slow/grab and short moves keep the current heading
-        if dist < 6 or kind == "grab":
+        if dist < 6 or kind in ("grab", "pick", "load"):
             dh1 = 0.0
         else:
             dh1 = fwd_turn if abs(fwd_turn) <= abs(back_turn) else back_turn
@@ -85,7 +104,7 @@ for i in range(1, len(R)):
             d = abs(dh1) / TURN
             segs.append((d, lambda u, x=x, y=y, h=h, dh=dh1: (x, y, h + dh * u), i, "turn"))
             h = h + dh1
-        sp = SLOW if kind == "grab" else SPEED
+        sp = SLOW if kind in ("grab", "pick") else SPEED
         d = dist / sp + 0.15
         def drive(u, x=x, y=y, dx=dx, dy=dy, h=h):
             e = u * u * (3 - 2 * u)
@@ -140,7 +159,7 @@ def field_layer():
     d.rectangle([X0, Y0, X1, Y1], fill=(214, 62, 62), outline=(30, 30, 30), width=2)
     X, Y = P(-WALL + 2, -68); d.text((X + 4, Y + 4), "loader", font=f_xs, fill=(50, 54, 62), anchor="lm")
     # yellow wall pins
-    for px, py in [(-67.6, 22.1), (-67.6, -22.1), (-21.5, -66.8), (21.5, -66.8), (67.6, 22.1), (67.6, -22.1), (-21.5, 66.8), (21.5, 66.8)]:
+    for px, py in [(67.6, 22.1), (67.6, -22.1), (-21.5, 66.8), (21.5, 66.8)]:
         circ(px, py, 1.8, (240, 196, 40), w=1)
     # (our two field stacks are drawn per frame: they disappear when grabbed)
     for px, py in [(T, T), (2 * T, 2 * T)]:
@@ -153,8 +172,8 @@ def field_layer():
     # side panel
     d.rectangle([760, 0, W, H], fill=(255, 255, 255))
     d.line([760, 0, 760, H], fill=(210, 214, 220), width=2)
-    d.text((790, 30), "19109M  ·  Skills path v2 (draft)", font=f_m, fill=(110, 116, 126))
-    d.text((790, 56), "Stacks, back loads, tall goal", font=f_b, fill=(20, 22, 26))
+    d.text((790, 30), "19109M  ·  Skills path v3 (draft)", font=f_m, fill=(110, 116, 126))
+    d.text((790, 56), "Bare pin first on every goal", font=f_b, fill=(20, 22, 26))
     d.text((1262, 30), "red side · tile 23.8\"", font=f_xs, fill=(110, 116, 126), anchor="ra")
     return im
 
@@ -198,21 +217,23 @@ def frame(t, trail):
     def stack(px, py):
         X, Y = P(px, py); d.ellipse([X - 12, Y - 12, X + 12, Y + 12], fill=(240, 196, 40), outline=(30, 30, 30), width=2)
         d.ellipse([X - 5, Y - 5, X + 5, Y + 5], fill=(255, 255, 255), outline=(30, 30, 30), width=1)
+    def wpin(px, py):
+        X, Y = P(px, py); d.ellipse([X - 9, Y - 9, X + 9, Y + 9], fill=(240, 196, 40), outline=(30, 30, 30), width=1)
+    for k, (px, py) in zip(PICKS, [(-67.6, 22.1), (21.5, -66.8), (-21.5, -66.8), (-67.6, -22.1)]):
+        if k not in done_steps: wpin(px, py)
     if GRABS[0] not in done_steps: stack(-T, -T)
     if GRABS[1] not in done_steps: stack(-2 * T, -2 * T)
-    counts = {}
-    for k in done_steps:
-        if k in GOAL_OF: counts[GOAL_OF[k]] = counts.get(GOAL_OF[k], 0) + 1
-    for g, (gx, gy) in {"G2": (-2 * T, -T), "G3": (-T, -2 * T), "TALL": (0, 0)}.items():
-        if counts.get(g):
+    pts, goals = points_after(done_steps)
+    if t >= TOTAL: pts += 8
+    for g, (gx, gy) in {"G2": (-2 * T, -T), "G3": (-T, -2 * T), "TALL": (0, 0), "LS": (-2 * T, T), "BR": (T, -2 * T)}.items():
+        if goals.get(g):
             X, Y = P(gx, gy); d.ellipse([X - 11, Y - 11, X + 11, Y + 11], fill=(240, 196, 40), outline=(30, 30, 30), width=3)
-            d.text((X, Y), str(counts[g]), font=f_m, fill=(20, 22, 26), anchor="mm")
+            d.text((X, Y), str(len(goals[g])), font=f_m, fill=(20, 22, 26), anchor="mm")
     robot(d, x, y, h, carrying)
     # panel: timer + steps
     d.text((790, 100), f"{min(t, TOTAL):5.1f} s", font=f_t, fill=(20, 22, 26))
     d.text((960, 118), f"/ 60 s", font=f_m, fill=(110, 116, 126))
-    done = sum(1 for k in R[1:idx + 1] if k[3] in ("score", "tall")) if phase == "act" or t >= TOTAL else sum(1 for k in R[1:idx] if k[3] in ("score", "tall"))
-    d.text((1080, 108), f"scored {done}/6", font=f_m, fill=(20, 22, 26))
+    d.text((1060, 108), f"{pts} pts", font=f_b, fill=(20, 22, 26))
     top = max(1, min(idx - 6, len(R) - 18))
     yy = 168
     for j in range(top, min(top + 18, len(R))):
@@ -223,7 +244,7 @@ def frame(t, trail):
         d.text((790, yy), f"{j:2d}", font=f_xs, fill=(150, 155, 165))
         d.text((818, yy), R[j][4], font=f_m if cur else f_s, fill=col)
         yy += 29
-    d.text((790, 690), "claw at the back · toggle arm · 0.5 s back loads · number on a goal = scored there", font=f_xs, fill=(110, 116, 126))
+    d.text((790, 690), "number on a goal = pins on it · points if we own every goal at the end (+8 park)", font=f_xs, fill=(110, 116, 126))
     return im
 
 n = int((TOTAL + HOLD) * FPS)
