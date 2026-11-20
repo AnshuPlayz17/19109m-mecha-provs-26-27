@@ -33,11 +33,11 @@ ul { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; max-width: 75ch; }
 <div class="wrap">
   <header>
     <span class="eyebrow">19109M · Override 2026–27 · Robot Skills plan (draft)</span>
-    <h1>Skills path v7</h1>
+    <h1>Skills path v8</h1>
     <p class="lede">Every goal starts empty, so each one gets a bare pin first (preload, a cluster pin or a bare load), then cup + pin stacks on top. Red side, claw at the back, 3.25" wheels. Planned only: nothing has run it yet.</p>
     <div class="stats">
       <div class="stat"><b>138</b><span>points planned</span></div>
-      <div class="stat"><b>~58.8 s</b><span>of 60 s</span></div>
+      <div class="stat"><b>~57.4 s</b><span>of 60 s</span></div>
       <div class="stat"><b>13</b><span>yellow pins + park</span></div>
     </div>
   </header>
@@ -50,23 +50,36 @@ ul { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; max-width: 75ch; }
       <thead><tr><th>Goal</th><th>First pin (bare)</th><th>Then on top (cup + pin)</th><th>Pins</th><th>Points</th></tr></thead>
       <tbody>
         <tr><td>Left short goal</td><td>Preload</td><td>Wall stack A</td><td class="n">2</td><td class="n">20</td></tr>
-        <tr><td>Red Goal 2</td><td>Left cluster pin</td><td>Wall stack C, field stack, corner stack, loads 3 and 5</td><td class="n">6</td><td class="n">60</td></tr>
-        <tr><td>Red Goal 3</td><td>Load 1 (bare)</td><td>Loads 2 and 4</td><td class="n">3</td><td class="n">30</td></tr>
+        <tr><td>Red Goal 2</td><td>Left cluster pin</td><td>Wall stack C, field stack, corner stack, loads 2 and 4</td><td class="n">6</td><td class="n">60</td></tr>
+        <tr><td>Red Goal 3</td><td>Load 1 (bare)</td><td>Load 3</td><td class="n">2</td><td class="n">20</td></tr>
         <tr><td>Bottom-right short goal</td><td>Bottom-right cluster pin</td><td>Wall stack D</td><td class="n">2</td><td class="n">20</td></tr>
-        <tr><td>Park in the midfield</td><td></td><td></td><td></td><td class="n">8</td></tr>
+        <tr><td>Tall goal (middle)</td><td>Bottom-right cluster pin</td><td></td><td class="n">1</td><td class="n">10</td></tr>
+        <tr><td>Park in the midfield (ends on the tall goal)</td><td></td><td></td><td></td><td class="n">8</td></tr>
       </tbody>
       <tfoot><tr><td>Total</td><td></td><td></td><td class="n">13</td><td class="n">138</td></tr></tfoot>
     </table></div>
     <p class="note">Scoring: each pin shows one half (the other sits in the goal or the cup). An owned yellow half is 10, parking in the midfield is 8. Both toggles are flipped with small cascade lifts along the way.</p>
+    <h2>If a first pin isn't yellow-side up</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>First pin</th><th>Who sets which half is up</th><th>Yellow up</th><th>Red up</th><th>Blue up</th></tr></thead>
+      <tbody>
+        <tr><td>Preload (left short goal)</td><td>Us, before the match</td><td class="n">10</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Load 1 (Red Goal 3)</td><td>Our loader</td><td class="n">10</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>3 cluster pins (Red Goal 2, bottom-right short goal, tall goal)</td><td>The field setup</td><td class="n">10 each</td><td class="n">5 each</td><td class="n">0 each</td></tr>
+      </tbody>
+      <tfoot><tr><td>Total</td><td></td><td class="n">138</td><td class="n">123</td><td class="n">108</td></tr></tfoot>
+    </table></div>
+    <p class="note">Every short and alliance goal still gets a cup + pin stack on top of its first pin, so their stacks score yellow no matter how the first pin sits.</p>
   </section>
 
   <section>
     <h2>Still to check</h2>
     <ul>
-      <li>Times are estimates (about 62 in/s top speed, quick grabs). If the real robot is slower, drop load 5: 128 points in about 55 s.</li>
-      <li>Can Red Goal 2 hold 6 pins at the cascade's height?</li>
+      <li>Times are estimates (about 62 in/s top speed, quick grabs). If the real robot is slower, drop load 4: 128 points in about 53 s.</li>
+      <li>Which half of each cluster pin faces up at the start of a skills run.</li>
+      <li>Can Red Goal 2 hold 6 pins at the cascade's height? Can the tall goal take more than 1?</li>
       <li>How many loads we really get, and which 2 come as bare pins.</li>
-      <li>Left out for time: wall stack B, the tall goal, and loads 6 and 7.</li>
+      <li>Left out for time: wall stack B and loads 5 to 7.</li>
     </ul>
   </section>
 </div>

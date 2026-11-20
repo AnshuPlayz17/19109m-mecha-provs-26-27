@@ -65,11 +65,11 @@ R = [
  (LD[0], LD[1], 90, "load", "Back onto the loader: LOAD 1 (bare pin)", None),
  N("G3", 270, "score", "Turn, back onto Red Goal 3: load 1 (1st, bare)"),
 ]
-NLOADS = 4
+NLOADS = 3
 for n in range(2, 2 + NLOADS):
     R.append((-42, -47.6, 270, "stop", "Pull forward off the goal", None) if R[-1][5] == "G3" else (-47.6, -42, 180, "stop", "Pull forward off the goal", None))
     R.append((LD[0], LD[1], 90, "load", f"Back onto the loader: LOAD {n} (cup + pin)", None))
-    if n % 2 == 1: R.append(N("G2", 180, "score", f"Turn, back up onto Red Goal 2: load {n}"))
+    if n % 2 == 0: R.append(N("G2", 180, "score", f"Turn, back up onto Red Goal 2: load {n}"))
     else: R.append(N("G3", 270, "score", f"Turn, back onto Red Goal 3: load {n}"))
 R += [
  (-24, -31, 100, None, "Curve right, above Red Goal 3", None),
@@ -80,7 +80,9 @@ R += [
  (2, -45, 270, "stop", "Pull forward off the goal", None),
  N("D", 325, "grab", "Back onto WALL STACK D, grab"),
  N("BR", 270, "score", "Back onto the bottom-right short goal: wall stack D (2nd)"),
- (-6, -20, 20, "park", "Drive into the midfield: PARK", None),
+ (2, -40, 300, "stop", "Pull forward off the goal", None),
+ N("KBN", 270, "pick", "Curve back onto the CLUSTER's top pin (bare)"),
+ N("TALL", 215, "tall", "Curve back onto the TALL GOAL: cluster pin, and PARK"),
 ]
 GRABS = [i for i, r in enumerate(R) if r[3] == "grab"]
 PICKS = [i for i, r in enumerate(R) if r[3] == "pick"]
@@ -290,8 +292,8 @@ def field_layer():
     # side panel
     d.rectangle([760, 0, W, H], fill=(255, 255, 255))
     d.line([760, 0, 760, H], fill=(210, 214, 220), width=2)
-    d.text((790, 30), "19109M  ·  Skills path v7 (draft)", font=f_m, fill=(110, 116, 126))
-    d.text((790, 56), "Bare pin first on every goal", font=f_b, fill=(20, 22, 26))
+    d.text((790, 30), "19109M  ·  Skills path v8 (draft)", font=f_m, fill=(110, 116, 126))
+    d.text((790, 56), "Middle scored, every goal stacked", font=f_b, fill=(20, 22, 26))
     d.text((1262, 30), "red side · tile 23.8\"", font=f_xs, fill=(110, 116, 126), anchor="ra")
     return im
 
