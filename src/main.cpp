@@ -40,11 +40,10 @@ constexpr int DEADBAND = 8;
  *   R1 / R2: cascade up / down (holds when let go)    B: cascade all the way down
  *   L1: claw open / close
  *   L2 (hold): intake in    Down: intake out
- *   Up: toggle arms out / in    X: arm flip piston
+ *   Up: toggle hit (cascade swings the toggle arm)    X: arm flip piston
  *   Off the field only: B + Down together runs the picked auto (with the report).
  */
 void opcontrol() {
-	bool armsOut = false;
 	while (true) {
 		int throttle = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 		int turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
@@ -90,11 +89,8 @@ void opcontrol() {
 		}
 
 		// arms
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-			armsOut = !armsOut;
-			if (armsOut) armOut();
-			else armIn();
-		}
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP))
+			pros::Task([] { toggleHit(); }, "toggle hit"); // runs on its own so driving doesn't stop
 		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) armFlip(!armFlipped());
 
 		pros::delay(10);

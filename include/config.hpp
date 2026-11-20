@@ -22,13 +22,12 @@ constexpr std::int8_t LEFT_BACK = -2;
 constexpr std::int8_t RIGHT_FRONT = 3;
 constexpr std::int8_t RIGHT_BACK = 4;
 
-// Cascade: 2 x 11 W (22 W). Intake: its own 11 W motor (no PTO).
+// Cascade: 3 x 11 W (33 W); its spool also swings the toggle arm. Intake: its own 11 W motor.
 constexpr std::int8_t CASCADE_A = 5;
 constexpr std::int8_t CASCADE_B = -6;
+constexpr std::int8_t CASCADE_C = 8;
 constexpr std::int8_t INTAKE_MOTOR = 7;
 
-// Toggle arm: 1 x 11 W
-constexpr std::int8_t ARM_MOTOR = 8;
 constexpr std::uint8_t RIGHT_OPTICAL = 9;  // toggle optical, right side
 
 // Sensors
@@ -126,14 +125,10 @@ constexpr double BLUE_HUE_MIN = 190, BLUE_HUE_MAX = 250;
 constexpr int TOGGLE_MIN_PROXIMITY = 100;    // 0-255: closer than this counts as "sees a toggle"
 
 // ============================================================================
-// Toggle arm (1 x 11 W, motor encoder)
+// Toggle arm: no motor of its own. The cascade spool swings it, so raising the cascade runs it.
 // ============================================================================
 
-// No arm sensor: the arm motors' own encoders, zeroed when the program starts. So start every
-// match with the arms resting on their hardstop.
-constexpr double ARM_OUT_DEG = 0;            // MEASURE: arm motor degrees from the hardstop to out (shown on the check screen)
-constexpr double ARM_KP = 1.5;               // power (out of 127) per degree of error
-constexpr double ARM_TOLERANCE = 3;          // degrees
+constexpr double TOGGLE_HIT_IN = 0;          // MEASURE: cascade rise (in) where the toggle arm is all the way out
 
 // ============================================================================
 // Pre-auto check

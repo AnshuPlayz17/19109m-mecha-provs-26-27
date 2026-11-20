@@ -105,9 +105,8 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
       <thead><tr><th>Part</th><th>What</th><th>Power</th></tr></thead>
       <tbody>
         <tr><td>Drive</td><td>4 × 11 W motors, 6 × 2.75" omnis (3 a side), 450 rpm, 12" track width</td><td class="num">44 W</td></tr>
-        <tr><td>Cascade</td><td>2 × 11 W on the spool</td><td class="num">22 W</td></tr>
+        <tr><td>Cascade</td><td>3 × 11 W on the spool. The spool also swings the toggle arm.</td><td class="num">33 W</td></tr>
         <tr><td>Intake</td><td>1 × 11 W, its own motor (no PTO)</td><td class="num">11 W</td></tr>
-        <tr><td>Toggle arm</td><td>1 × 11 W. Starts every match on its hardstop.</td><td class="num">11 W</td></tr>
         <tr><td>Pistons</td><td>Claw, balancers (single-acting) · arm flip (double-acting)</td><td class="num">air</td></tr>
         <tr><td>Sensors</td><td>12 (see 04)</td><td class="num">—</td></tr>
       </tbody>
@@ -370,12 +369,14 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
         <text x="57" y="67" text-anchor="middle" class="b">11 W</text>
         <rect x="20" y="100" width="74" height="44" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
         <text x="57" y="127" text-anchor="middle" class="b">11 W</text>
-        <path d="M94 62 H140 V92 M94 122 H140 V92 H180" stroke="var(--ink)" stroke-width="3" fill="none"/>
+        <rect x="20" y="4" width="74" height="30" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+        <text x="57" y="24" text-anchor="middle" class="b">11 W</text>
+        <path d="M94 19 H140 V92 M94 62 H140 M94 122 H140 V92 H180" stroke="var(--ink)" stroke-width="3" fill="none"/>
         <circle cx="200" cy="92" r="20" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/>
         <circle cx="200" cy="92" r="5" fill="var(--ink)"/>
         <text x="200" y="134" text-anchor="middle" class="b">spool</text>
         <text x="200" y="149" text-anchor="middle" class="g">+ rotation sensor</text>
-        <path d="M220 92 H250" class="lead"/><text x="256" y="88" class="b">CASCADE · 22 W</text><text x="256" y="103" class="g">both motors on one shaft</text>
+        <path d="M220 92 H250" class="lead"/><text x="256" y="88" class="b">CASCADE · 33 W</text><text x="256" y="103" class="g">3 motors · spool swings the toggle arm</text>
         <line x1="20" y1="170" x2="440" y2="170" stroke="var(--rule)"/>
         <rect x="20" y="180" width="74" height="34" rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
         <text x="57" y="202" text-anchor="middle" class="b">11 W</text>
@@ -384,8 +385,8 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
         <text x="256" y="195" class="b">INTAKE · 11 W</text><text x="256" y="210" class="g">its own motor</text>
       </svg></div>
       <ul class="chk">
-        <li>Both cascade motors on the same shaft (or geared together) so they can't fight each other.</li>
-        <li>Only 22 W lifts the cascade now: gear it slower than you would with 3 motors, or it may stall with a tall stack.</li>
+        <li>All 3 cascade motors on the same shaft (or geared together) so they can't fight each other.</li>
+        <li>The toggle arm runs off the spool: it swings out as the cascade rises. Make sure it never sticks out past 18" at the start or hits a goal while scoring.</li>
         <li>Lift the heaviest real load (claw + a full stack) all the way up before building the rest.</li>
         <li>The cascade holds its height on its own when the motors brake. If it slides down, add rubber bands to help it.</li>
         <li>The intake runs any time, even while the cascade moves.</li>
@@ -462,7 +463,7 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
           <li><b>Starting jig:</b> puts the robot in the same spot every time.</li>
           <li><b>Funnels on the claw:</b> it grabs a pin even an inch off.</li>
           <li><b>Hardstops</b> on everything that moves: toggle arm, arm flip, claw, cascade.</li>
-          <li><b>Toggle arm</b> on its hardstop at the start (the code zeroes there).</li>
+          <li><b>Toggle arm</b> folded at the start, with the cascade all the way down.</li>
           <li><b>No slop</b> in the drive or the tracking wheels.</li>
           <li><b>Pre-auto check screen</b> all green before every match.</li>
         </ul>
@@ -495,7 +496,7 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
         <tr><td>Claw height, cascade down</td><td>Floor to the bottom of the closed claw</td><td class="blank"></td></tr>
         <tr><td>Cascade top reading</td><td>Raise all the way: degrees on the check screen</td><td class="blank"></td></tr>
         <tr><td>Claw sensor with a pin</td><td>mm on the check screen with a pin in</td><td class="blank"></td></tr>
-        <tr><td>Toggle arm out</td><td>Degrees on the check screen with the arm out</td><td class="blank"></td></tr>
+        <tr><td>Toggle arm out</td><td>Cascade inches on the check screen when the toggle arm is all the way out</td><td class="blank"></td></tr>
         <tr><td>Optical hue, red toggle</td><td>Front / left / right</td><td class="blank"></td></tr>
         <tr><td>Optical hue, blue toggle</td><td>Front / left / right</td><td class="blank"></td></tr>
         <tr><td>Piston directions</td><td>Claw, balancers: what does air do?</td><td class="blank"></td></tr>

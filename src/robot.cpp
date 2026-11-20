@@ -72,9 +72,8 @@ std::int32_t DualImu::tare_heading() const { return set_rotation(0); }
 
 pros::MotorGroup leftDrive({LEFT_FRONT, LEFT_BACK}, pros::MotorGears::blue);
 pros::MotorGroup rightDrive({RIGHT_FRONT, RIGHT_BACK}, pros::MotorGears::blue);
-pros::MotorGroup cascadeMotors({CASCADE_A, CASCADE_B});
+pros::MotorGroup cascadeMotors({CASCADE_A, CASCADE_B, CASCADE_C});
 pros::Motor intakeMotor(INTAKE_MOTOR);
-pros::Motor arm(ARM_MOTOR);
 
 DualImu imu(IMU_A, IMU_B);
 pros::Rotation verticalEnc(TRACK_VERTICAL);
@@ -286,66 +285,16 @@ bool loadFromIntake() {
 }
 
 // ============================================================================
-// Toggle arms
+// Toggle arm (the cascade spool swings it)
 // ============================================================================
 
-namespace {
-std::atomic<bool> armAuto {false};
-std::atomic<double> armTarget {0};
-std::atomic<int> armManualPower {0};
-std::atomic<bool> armThere {false};
-
-void armTask() {
-	while (true) {
-		if (armAuto) {
-			double error = armTarget - armAngle();
-			if (std::abs(error) < ARM_TOLERANCE) {
-				armThere = true;
-				arm.brake();
-			} else {
-				armThere = false;
-				arm.move(std::clamp(static_cast<int>(error * ARM_KP), -127, 127));
-			}
-		} else if (armManualPower == 0) {
-			arm.brake();
-		} else {
-			arm.move(armManualPower);
-		}
-		pros::delay(10);
-	}
-}
-} // namespace
-
-double armAngle() {
-	double a = arm.get_position();
-	return good(a) ? a : 0;
-}
-
-void armTo(double deg) {
-	armTarget = deg;
-	armThere = false;
-	armAuto = true;
-}
-
-void armOut() {
-	if (ARM_OUT_DEG != 0) armTo(ARM_OUT_DEG);
-}
-
-void armIn() { armTo(0); }
-
-bool armWait(int timeout) {
-	std::uint32_t start = pros::millis();
-	pros::delay(20);
-	while (!armThere) {
-		if (pros::millis() - start > static_cast<std::uint32_t>(timeout)) return false;
-		pros::delay(10);
-	}
-	return true;
-}
-
-void armManual(int power) {
-	armAuto = false;
-	armManualPower = power;
+void toggleHit() {
+	if (TOGGLE_HIT_IN <= 0 || std::isnan(cascadeInches())) return;
+	double before = cascadeInches();
+	cascadeTo(TOGGLE_HIT_IN);
+	cascadeWait(1000);
+	cascadeTo(before);
+	cascadeWait(1000);
 }
 
 void armFlip(bool out) {
@@ -449,11 +398,7 @@ WallReset wallReset() {
 void robotStart() {
 	cascadeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 	intakeMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cascadeRot.reset_position(); // the cascade starts all the way down
 	for (pros::Optical* o : {&frontOptical, &leftOptical, &rightOptical}) o->set_led_pwm(100);
-	arm.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-	arm.tare_position(); // the arm starts on their hardstop
 	pros::Task cascadeLoop(cascadeTask, "cascade");
-	pros::Task armLoop(armTask, "arm");
 }

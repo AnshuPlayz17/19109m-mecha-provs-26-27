@@ -46,7 +46,7 @@ const Port PORTS[] = {
 	{std::abs(CASCADE_A), pros::DeviceType::motor, "CascA"},
 	{std::abs(CASCADE_B), pros::DeviceType::motor, "CascB"},
 	{std::abs(INTAKE_MOTOR), pros::DeviceType::motor, "Intake"},
-	{std::abs(ARM_MOTOR), pros::DeviceType::motor, "Arm"},
+	{std::abs(CASCADE_C), pros::DeviceType::motor, "CascC"},
 	{IMU_A, pros::DeviceType::imu, "IMU A"},
 	{IMU_B, pros::DeviceType::imu, "IMU B"},
 	{std::abs(TRACK_VERTICAL), pros::DeviceType::rotation, "TrackV"},
@@ -64,7 +64,7 @@ const Port PORTS[] = {
 /** How many measurements in config.hpp are still placeholders. */
 int unmeasured() {
 	double values[] = {CASCADE_IN_PER_DEG, CLAW_HEIGHT_DOWN, static_cast<double>(CLAW_PIN_MM),
-	                   ARM_OUT_DEG};
+	                   TOGGLE_HIT_IN};
 	int n = 0;
 	for (double v : values)
 		if (v == 0) n++;
@@ -100,8 +100,7 @@ Check checkBattery() {
 
 Check checkArm() {
 	if (armFlipped()) return {"Arm flip is OUT: put it in", RED};
-	std::snprintf(buf, sizeof buf, "Arm on the hardstop? (%.0f deg since start)", armAngle());
-	return {buf, YELLOW};
+	return {"Arm flip in; toggle arm folded?", GREEN};
 }
 
 Check checkCascade() {

@@ -32,7 +32,6 @@ class DualImu : public pros::Imu {
 extern pros::MotorGroup leftDrive, rightDrive;
 extern pros::MotorGroup cascadeMotors; // the 2 that always drive the cascade
 extern pros::Motor intakeMotor;
-extern pros::Motor arm;
 extern DualImu imu;
 extern pros::Rotation verticalEnc, horizontalEnc, cascadeRot;
 extern pros::Distance distLeft, distRight, distFront, clawDist;
@@ -41,7 +40,7 @@ extern pros::adi::Pneumatics clawPiston, armFlipPiston, balancerPiston;
 extern lemlib::Chassis chassis;
 extern pros::Controller controller;
 
-/** Starts the background tasks (cascade, arm). Call once from initialize(). */
+/** Starts the background tasks (cascade). Call once from initialize(). */
 void robotStart();
 
 /** Calibrates both IMUs and the odometry (robot must sit still ~3 s). */
@@ -83,16 +82,10 @@ bool loadFromBack();
  * nothing came in time. */
 bool loadFromIntake();
 
-// ---- toggle arms ----
-/** Arm angle from the hardstop, motor degrees (0 = where it was when the program started). */
-double armAngle();
-/** Starts moving the arm to this angle from rest; returns right away. */
-void armTo(double deg);
-void armOut();
-void armIn();
-bool armWait(int timeout = 1000);
-/** Driver control: runs the arm at this power and stops any move to an angle. */
-void armManual(int power);
+// ---- toggle arm (driven by the cascade spool) ----
+/** Flips a toggle: raises the cascade to TOGGLE_HIT_IN (the arm swings out), then back to where
+ * it was. Waits until done (about 0.5 s). Does nothing until TOGGLE_HIT_IN is measured. */
+void toggleHit();
 /** The double-acting arm flip piston. */
 void armFlip(bool out);
 bool armFlipped();

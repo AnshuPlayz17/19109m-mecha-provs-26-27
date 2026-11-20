@@ -9,7 +9,7 @@ The old robot's code (with autos 7 and 8 locked at build 355) stays in `19109M-R
 
 ## Code layout
 - `include/config.hpp`: every port, measurement and tuning number. `MEASURE` = placeholder, fill in from the real robot; never guess.
-- `src/robot.cpp`: devices, the two IMUs averaged (`DualImu`), LemLib, cascade, intake, claw, toggle arms, wall resets.
+- `src/robot.cpp`: devices, the two IMUs averaged (`DualImu`), LemLib, cascade (3 motors, also swings the toggle arm), intake, claw, wall resets.
 - `src/autos.cpp`: the auto list. Started from 0; the team adds autos one at a time.
 - `src/ui.cpp`: pre-auto check screen + auto picker, the 30 s report after every auto, the controller screen.
 
