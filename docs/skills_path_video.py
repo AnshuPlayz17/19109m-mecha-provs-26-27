@@ -277,8 +277,8 @@ def field_layer():
     d.rectangle([X0, Y0, X1, Y1], fill=(214, 62, 62), outline=(30, 30, 30), width=2)
     X, Y = P(-WALL + 2, -68); d.text((X + 4, Y + 4), "loader", font=f_xs, fill=(50, 54, 62), anchor="lm")
     # yellow wall pins
-    for px, py in [(67.6, 22.1), (67.6, -22.1), (-21.5, 66.8), (21.5, 66.8)]:
-        circ(px, py, 1.8, (240, 196, 40), w=1)
+    for px, py in [(67.6, 22.1), (67.6, -22.1), (-21.5, 66.8), (21.5, 66.8)]:  # wall stacks (cup + pin)
+        circ(px, py, 2.5, (240, 196, 40), w=2); circ(px, py, 1.0, (255, 255, 255), w=1)
     # (our two field stacks are drawn per frame: they disappear when grabbed)
     for px, py in [(T, T), (2 * T, 2 * T)]:
         pass
@@ -370,7 +370,7 @@ def frame(t, trail):
         d.text((790, yy), f"{j:2d}", font=f_xs, fill=(150, 155, 165))
         d.text((818, yy), R[j][4], font=f_m if cur else f_s, fill=col)
         yy += 29
-    d.text((790, 690), "10 pts per owned yellow half showing · +8 park · number on a goal = pins on it", font=f_xs, fill=(110, 116, 126))
+    d.text((790, 690), "wall pieces are cup + pin stacks · 10 pts per owned yellow half · +8 park", font=f_xs, fill=(110, 116, 126))
     return im
 
 n = int((TOTAL + HOLD) * FPS)
