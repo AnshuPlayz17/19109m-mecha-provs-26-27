@@ -1,0 +1,72 @@
+<title>19109M Skills Path</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: the video first, then the score breakdown and the open questions, one column. */
+:root {
+  --bg: #f2f4f6; --card: #ffffff; --fg: #191d23; --muted: #5b6471; --line: #d5dae0; --accent: #c8282f; --yellow: #d9a406;
+  --display: "Space Grotesk", system-ui, sans-serif; --body: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #13161b; --card: #1c2027; --fg: #e9ecf0; --muted: #9aa3af; --line: #2e343e; --accent: #ef5a60; --yellow: #f0bb1f; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #13161b; --card: #1c2027; --fg: #e9ecf0; --muted: #9aa3af; --line: #2e343e; --accent: #ef5a60; --yellow: #f0bb1f; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; }
+.eyebrow { font: 600 .72rem var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--display); font-size: 2rem; margin: 4px 0 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 1.1rem; margin: 0; }
+.lede { color: var(--muted); margin: 6px 0 0; max-width: 70ch; }
+.stats { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 10px; }
+.stat b { display: block; font: 700 1.6rem var(--display); }
+.stat span { color: var(--muted); font-size: .82rem; }
+video { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: #000; display: block; }
+section { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+tfoot td { font-weight: 700; border-bottom: 0; }
+td.n { font-family: var(--mono); white-space: nowrap; }
+ul { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; max-width: 75ch; }
+.note { color: var(--muted); font-size: .86rem; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">19109M · Override 2026–27 · Robot Skills plan (draft)</span>
+    <h1>Skills path v7</h1>
+    <p class="lede">Every goal starts empty, so each one gets a bare pin first (preload, a cluster pin or a bare load), then cup + pin stacks on top. Red side, claw at the back, 3.25" wheels. Planned only: nothing has run it yet.</p>
+    <div class="stats">
+      <div class="stat"><b>138</b><span>points planned</span></div>
+      <div class="stat"><b>~58.8 s</b><span>of 60 s</span></div>
+      <div class="stat"><b>13</b><span>yellow pins + park</span></div>
+    </div>
+  </header>
+
+  <video src="skills-path.mp4" controls muted playsinline preload="metadata"></video>
+
+  <section>
+    <h2>Where the points come from</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Goal</th><th>First pin (bare)</th><th>Then on top (cup + pin)</th><th>Pins</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Left short goal</td><td>Preload</td><td>Wall stack A</td><td class="n">2</td><td class="n">20</td></tr>
+        <tr><td>Red Goal 2</td><td>Left cluster pin</td><td>Wall stack C, field stack, corner stack, loads 3 and 5</td><td class="n">6</td><td class="n">60</td></tr>
+        <tr><td>Red Goal 3</td><td>Load 1 (bare)</td><td>Loads 2 and 4</td><td class="n">3</td><td class="n">30</td></tr>
+        <tr><td>Bottom-right short goal</td><td>Bottom-right cluster pin</td><td>Wall stack D</td><td class="n">2</td><td class="n">20</td></tr>
+        <tr><td>Park in the midfield</td><td></td><td></td><td></td><td class="n">8</td></tr>
+      </tbody>
+      <tfoot><tr><td>Total</td><td></td><td></td><td class="n">13</td><td class="n">138</td></tr></tfoot>
+    </table></div>
+    <p class="note">Scoring: each pin shows one half (the other sits in the goal or the cup). An owned yellow half is 10, parking in the midfield is 8. Both toggles are flipped with small cascade lifts along the way.</p>
+  </section>
+
+  <section>
+    <h2>Still to check</h2>
+    <ul>
+      <li>Times are estimates (about 62 in/s top speed, quick grabs). If the real robot is slower, drop load 5: 128 points in about 55 s.</li>
+      <li>Can Red Goal 2 hold 6 pins at the cascade's height?</li>
+      <li>How many loads we really get, and which 2 come as bare pins.</li>
+      <li>Left out for time: wall stack B, the tall goal, and loads 6 and 7.</li>
+    </ul>
+  </section>
+</div>
