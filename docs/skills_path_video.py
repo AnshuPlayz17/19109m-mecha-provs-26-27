@@ -23,7 +23,7 @@ T = TILE
 LD = (-56.5, -59.2)
 GOALS = {"LS": (-2 * T, T), "G2": (-2 * T, -T), "G3": (-T, -2 * T), "BR": (T, -2 * T), "TALL": (0, 0)}
 # (x, y, heading, act, text, extra). act: None = drive through without stopping
-REACH = 12.8  # robot center to the claw's target (body 8.9 + goal radius 3.5)
+REACH = 11.9  # robot center to the claw target (body 8.0 + goal radius 3.5 + 0.4)
 def back(target, h):  # robot center for backing onto `target` with heading h (back faces the target)
     tx, ty = target
     return (round(tx + REACH * math.sin(math.radians(h)), 1), round(ty + REACH * math.cos(math.radians(h)), 1))
@@ -204,7 +204,7 @@ while i < len(R):
     i = run[-1] + 1
 TOTAL = sum(sd[0] for sd in segs)
 
-# ---- crash check: robot body (15.5 x 17.8) against goals, pins, stacks, clusters, walls ----
+# ---- crash check: robot body (14.5 x 16) against goals, pins, stacks, clusters, walls ----
 def crash_check():
     obst = [(gx, gy, 4.5 if g == "TALL" else 3.5, g) for g, (gx, gy) in GOALS.items()]
     obst += [(2 * T, T, 3.5, "blue goal"), (T, 2 * T, 3.5, "blue goal"), (-T, 2 * T, 3.5, "top short"), (2 * T, -T, 3.5, "right short")]
@@ -224,11 +224,11 @@ def crash_check():
                 # obstacle in robot frame (x right, y forward)
                 dx, dy = ox - xx, oy - yy
                 rx, ry = dx * c - dy * s_, dx * s_ + dy * c
-                qx, qy = max(abs(rx) - 7.25, 0), max(abs(ry) - 8.9, 0)
+                qx, qy = max(abs(rx) - 7.25, 0), max(abs(ry) - 8.0, 0)
                 clear = math.hypot(qx, qy) - r
                 if clear < 0: problems.append((round(t, 1), R[k][4], name, round(clear, 1)))
-            for cx_ in (-7.75, 7.75):
-                for cy_ in (-8.9, 8.9):
+            for cx_ in (-7.25, 7.25):
+                for cy_ in (-8.0, 8.0):
                     wx = xx + cx_ * c + cy_ * s_; wy = yy - cx_ * s_ + cy_ * c
                     if abs(wx) > WALL + 0.01 or abs(wy) > WALL + 0.01:
                         if R[k][3] != "load": problems.append((round(t, 1), R[k][4], "wall", round(WALL - max(abs(wx), abs(wy)), 1)))
@@ -310,7 +310,7 @@ for _r in R:
     CARRY.append(_c)
 
 def robot(d, x, y, h, carrying):
-    w, l = 15.5, 17.8
+    w, l = 14.5, 16.0
     c, s = math.cos(math.radians(h)), math.sin(math.radians(h))
     def T(ox, oy):  # ox right, oy forward
         return P(x + ox * c + oy * s, y - ox * s + oy * c)
