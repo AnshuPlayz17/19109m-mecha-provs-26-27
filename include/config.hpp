@@ -54,7 +54,7 @@ constexpr char BALANCER_PISTON = 'C';  // balancers: come out by themselves when
 // ============================================================================
 
 // 6 x 3.25" omnis (3 per side), all omni, 450 rpm: about 77 in/s top speed
-constexpr float TRACK_WIDTH = 11.5;    // PLANNED (old robot 12.75 felt big; balancers help at the top): middle of left wheels to middle of right wheels, in
+constexpr float TRACK_WIDTH = 11;      // PLANNED: 14" overall with the wheels between 2 rails (old robot 12.75 felt big): middle of left wheels to middle of right wheels, in
 constexpr float DRIVE_RPM = 450;
 constexpr float HORIZONTAL_DRIFT = 2;  // LemLib: 2 for an all-omni drive
 
