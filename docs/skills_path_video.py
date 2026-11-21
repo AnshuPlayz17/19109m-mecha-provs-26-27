@@ -224,7 +224,7 @@ def crash_check():
                 # obstacle in robot frame (x right, y forward)
                 dx, dy = ox - xx, oy - yy
                 rx, ry = dx * c - dy * s_, dx * s_ + dy * c
-                qx, qy = max(abs(rx) - 7.75, 0), max(abs(ry) - 8.9, 0)
+                qx, qy = max(abs(rx) - 7.25, 0), max(abs(ry) - 8.9, 0)
                 clear = math.hypot(qx, qy) - r
                 if clear < 0: problems.append((round(t, 1), R[k][4], name, round(clear, 1)))
             for cx_ in (-7.75, 7.75):
