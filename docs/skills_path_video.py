@@ -209,7 +209,7 @@ while i < len(R):
     i = run[-1] + 1
 TOTAL = sum(sd[0] for sd in segs)
 
-# ---- crash check: robot body (13.5 x 14.5) against goals, pins, stacks, clusters, walls ----
+# ---- crash check: robot body (13 x 14.5) against goals, pins, stacks, clusters, walls ----
 def crash_check():
     obst = [(gx, gy, 4.5 if g == "TALL" else 3.5, g) for g, (gx, gy) in GOALS.items()]
     obst += [(2 * T, T, 3.5, "blue goal"), (T, 2 * T, 3.5, "blue goal"), (-T, 2 * T, 3.5, "top short"), (2 * T, -T, 3.5, "right short")]
@@ -229,10 +229,10 @@ def crash_check():
                 # obstacle in robot frame (x right, y forward)
                 dx, dy = ox - xx, oy - yy
                 rx, ry = dx * c - dy * s_, dx * s_ + dy * c
-                qx, qy = max(abs(rx) - 6.75, 0), max(abs(ry) - 7.25, 0)
+                qx, qy = max(abs(rx) - 6.5, 0), max(abs(ry) - 7.25, 0)
                 clear = math.hypot(qx, qy) - r
                 if clear < 0: problems.append((round(t, 1), R[k][4], name, round(clear, 1)))
-            for cx_ in (-6.75, 6.75):
+            for cx_ in (-6.5, 6.5):
                 for cy_ in (-7.25, 7.25):
                     wx = xx + cx_ * c + cy_ * s_; wy = yy - cx_ * s_ + cy_ * c
                     if abs(wx) > WALL + 0.01 or abs(wy) > WALL + 0.01:
@@ -315,7 +315,7 @@ for _r in R:
     CARRY.append(_c)
 
 def robot(d, x, y, h, carrying):
-    w, l = 13.5, 14.5
+    w, l = 13.0, 14.5
     c, s = math.cos(math.radians(h)), math.sin(math.radians(h))
     def T(ox, oy):  # ox right, oy forward
         return P(x + ox * c + oy * s, y - ox * s + oy * c)
