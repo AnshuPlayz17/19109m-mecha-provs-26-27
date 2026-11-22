@@ -59,6 +59,8 @@ th { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color:
 tfoot td { font-weight: 700; border-top: 1.5px solid var(--ink); border-bottom: 0; }
 td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
 .num { font-family: var(--mono); font-size: .85rem; white-space: nowrap; }
+.holes td.num { white-space: normal; }
+.holes td:first-child { width: 42%; }
 
 .key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .82rem; color: var(--gray); }
 .key span { display: inline-flex; align-items: center; gap: 6px; }
@@ -104,7 +106,7 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
     <div class="tbl"><table>
       <thead><tr><th>Part</th><th>What</th><th>Power</th></tr></thead>
       <tbody>
-        <tr><td>Drive</td><td>4 × 11 W motors, 6 × 3.25" omnis (3 a side), 450 rpm (~77 in/s), 11.5" track width (14.5" overall)</td><td class="num">44 W</td></tr>
+        <tr><td>Drive</td><td>4 × 11 W motors, 4 × 3.25" omnis (2 a side), 450 rpm (~77 in/s), 14.5" × 14.5", track 23 holes (11.5")</td><td class="num">44 W</td></tr>
         <tr><td>Cascade</td><td>3 × 11 W on the spool. The spool also swings the toggle arm.</td><td class="num">33 W</td></tr>
         <tr><td>Intake</td><td>1 × 11 W, its own motor (no PTO)</td><td class="num">11 W</td></tr>
         <tr><td>Pistons</td><td>Claw, balancers (single-acting) · arm flip (double-acting)</td><td class="num">air</td></tr>
@@ -159,42 +161,39 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
   <!-- 03 -->
   <section>
     <h2><span class="n">03</span>Drivetrain</h2>
+    <p class="note">2 wheels a side (3.25" omnis), 4 × 11 W motors at 450 rpm. Measured in VEX holes: 1 hole = 0.5" (a 35-hole C-channel is 17.5"). Hole 1 is the front end of each rail.</p>
     <div class="cols">
       <div class="stack">
-        <div class="fig"><svg viewBox="0 0 470 440" role="img" aria-label="Top view of the drivetrain: 3 wheels a side, the middle one shifted back under the cascade, 11.5 inch track width, motors staggered left and right">
-          <text x="180" y="16" text-anchor="middle" class="b">FRONT ↑</text>
-          <!-- rails -->
+        <h3>Top view</h3>
+        <div class="fig"><svg viewBox="0 0 520 400" role="img" aria-label="Top view: 2 wheels a side between an outer and inner rail, 29-hole rails, 28-hole cross braces, track 23 holes, wheelbase 19 holes, motors inside the inner rails">
+          <text x="175" y="20" text-anchor="middle" class="b">FRONT ↑</text>
           <g fill="var(--tint)" stroke="var(--ink)" stroke-width="1.5">
-            <rect x="40" y="30" width="10" height="350"/><rect x="80" y="30" width="10" height="350"/>
-            <rect x="270" y="30" width="10" height="350"/><rect x="310" y="30" width="10" height="350"/>
-            <rect x="40" y="30" width="280" height="8"/><rect x="40" y="372" width="280" height="8"/>
+            <rect x="35" y="35" width="10" height="290"/><rect x="75" y="35" width="10" height="290"/>
+            <rect x="265" y="35" width="10" height="290"/><rect x="305" y="35" width="10" height="290"/>
+            <rect x="35" y="36" width="280" height="8"/><rect x="35" y="316" width="280" height="8"/>
           </g>
-          <!-- wheels -->
           <g fill="var(--ink)">
-            <rect x="54" y="46" width="22" height="55" rx="5"/><rect x="284" y="46" width="22" height="55" rx="5"/>
-            <rect x="54" y="244" width="22" height="55" rx="5"/><rect x="284" y="244" width="22" height="55" rx="5"/>
-            <rect x="54" y="310" width="22" height="55" rx="5"/><rect x="284" y="310" width="22" height="55" rx="5"/>
+            <rect x="50" y="57.5" width="20" height="65" rx="5"/><rect x="280" y="57.5" width="20" height="65" rx="5"/>
+            <rect x="50" y="247.5" width="20" height="65" rx="5"/><rect x="280" y="247.5" width="20" height="65" rx="5"/>
           </g>
-          <!-- motors -->
           <g fill="var(--paper)" stroke="var(--ink)" stroke-width="2">
-            <rect x="94" y="120" width="40" height="40" rx="4"/><rect x="94" y="190" width="40" height="40" rx="4"/>
-            <rect x="226" y="80" width="40" height="40" rx="4"/><rect x="226" y="150" width="40" height="40" rx="4"/>
+            <rect x="88" y="105" width="40" height="40" rx="4"/><rect x="88" y="225" width="40" height="40" rx="4"/>
+            <rect x="222" y="105" width="40" height="40" rx="4"/><rect x="222" y="225" width="40" height="40" rx="4"/>
           </g>
-          <g text-anchor="middle" class="b"><text x="114" y="145">M</text><text x="114" y="215">M</text><text x="246" y="105">M</text><text x="246" y="175">M</text></g>
-          <!-- cascade -->
-          <rect x="95" y="306" width="170" height="56" rx="3" fill="none" stroke="var(--ink)" stroke-dasharray="5 4"/>
-          <text x="180" y="338" text-anchor="middle" class="g">cascade base</text>
-          <!-- track width -->
-          <line x1="65" y1="396" x2="295" y2="396" stroke="var(--ink)"/>
-          <line x1="65" y1="390" x2="65" y2="402" stroke="var(--ink)"/><line x1="295" y1="390" x2="295" y2="402" stroke="var(--ink)"/>
-          <text x="180" y="418" text-anchor="middle" class="mono">11.5" track width (14.5" overall)</text>
-          <text x="180" y="434" text-anchor="middle" class="g">wheel center to wheel center</text>
-          <!-- callouts right -->
-          <path d="M306 74 H340" class="lead"/><text x="346" y="78">front wheel</text>
-          <path d="M306 272 H340" class="lead"/><text x="346" y="268">middle wheel</text><text x="346" y="283" class="g">pushed back</text>
-          <path d="M306 338 H340" class="lead"/><text x="346" y="342">back wheel</text>
-          <path d="M266 100 C 300 100, 310 130, 340 140" class="lead"/><text x="346" y="138">motors staggered</text><text x="346" y="153" class="g">so they don't meet</text>
-          <path d="M320 34 H340 V200" class="lead"/><text x="346" y="204">outer + inner rail</text><text x="346" y="219" class="g">wheel between them</text>
+          <g text-anchor="middle" class="b"><text x="108" y="130">M</text><text x="108" y="250">M</text><text x="242" y="130">M</text><text x="242" y="250">M</text></g>
+          <rect x="92" y="272" width="166" height="40" rx="3" fill="none" stroke="var(--ink)" stroke-dasharray="5 4"/>
+          <text x="175" y="296" text-anchor="middle" class="g">cascade base (above)</text>
+          <line x1="60" y1="348" x2="290" y2="348" stroke="var(--ink)"/>
+          <line x1="60" y1="342" x2="60" y2="354" stroke="var(--ink)"/><line x1="290" y1="342" x2="290" y2="354" stroke="var(--ink)"/>
+          <text x="175" y="370" text-anchor="middle" class="mono">track 23 holes (11.5")</text>
+          <text x="175" y="388" text-anchor="middle" class="g">wheel center to wheel center</text>
+          <line x1="335" y1="90" x2="335" y2="280" stroke="var(--ink)"/>
+          <line x1="329" y1="90" x2="341" y2="90" stroke="var(--ink)"/><line x1="329" y1="280" x2="341" y2="280" stroke="var(--ink)"/>
+          <text x="348" y="180" class="mono">wheelbase</text><text x="348" y="196" class="mono">19 holes (9.5")</text>
+          <path d="M315 60 H345" class="lead"/><text x="350" y="64">rails 29 holes (14.5")</text>
+          <path d="M315 320 H345" class="lead"/><text x="350" y="324">braces 28 holes (14")</text>
+          <path d="M262 125 H345" class="lead"/><text x="350" y="129">motor on gear 9.5</text>
+          <path d="M262 245 H345" class="lead"/><text x="350" y="249">motor on gear 21.5</text>
         </svg></div>
         <div class="key">
           <span><svg viewBox="0 0 26 14"><rect x="7" y="0" width="12" height="14" rx="3" fill="#111"/></svg>wheel</span>
@@ -202,17 +201,106 @@ td.blank { width: 34%; border-bottom: 1.5px solid var(--ink); }
           <span><svg viewBox="0 0 26 14"><rect x="1" y="4" width="24" height="6" fill="#f0f0f0" stroke="#111"/></svg>C-channel</span>
         </div>
       </div>
-      <ul class="chk">
-        <li><b>Size:</b> about 14.5" × 14.5" (square). Wheelbase (front axle to back axle) about 10.5–11". The balancers handle tipping at the top, so reach them out to the front and back corners too.</li>
-        <li>Track width 11.5" (23 holes), wheel center to wheel center; about 14.5" overall. Don't go below 11": it tips with the cascade up.</li>
-        <li>Gap between the inner rails about 9.5": the cascade (about 9") fits with ~0.25" each side.</li>
-        <li>Middle wheel shifted back, under the cascade's weight. Leave a gap so it doesn't rub the back wheel.</li>
-        <li>Stagger the left and right motors along the length so they don't hit in the middle.</li>
-        <li><b>No slop:</b> every axle in bearings on both rails, shaft collars tight, no wobble when you shake a wheel.</li>
-        <li>Spin each side by hand: it rolls freely and feels the same as the other side.</li>
-        <li>Battery and drive motors as low as they go.</li>
-      </ul>
+      <div class="stack">
+        <h3>Hole numbers</h3>
+        <div class="tbl holes"><table>
+          <thead><tr><th>Part</th><th>Holes</th><th>Inches</th></tr></thead>
+          <tbody>
+            <tr><td>Drive rails (4: outer + inner each side)</td><td class="num">29 long</td><td class="num">14.5"</td></tr>
+            <tr><td>Wheel axles (both rails)</td><td class="num">6 and 25</td><td class="num">9.5" apart</td></tr>
+            <tr><td>Gear axles between them</td><td class="num">9.5, 12.5, 15.5, 18.5, 21.5</td><td class="num">1.5" apart</td></tr>
+            <tr><td>Motors on gears</td><td class="num">9.5 and 21.5</td><td></td></tr>
+            <tr><td>Cross braces</td><td class="num">28 long</td><td class="num">14"</td></tr>
+            <tr><td>Rails on each brace</td><td class="num">1, 5, 24, 28</td><td></td></tr>
+            <tr><td>Wheel centers on each brace</td><td class="num">3 and 26</td><td class="num">track 11.5"</td></tr>
+            <tr><td>Wheel bay (outer to inner rail)</td><td class="num">4</td><td class="num">2"</td></tr>
+            <tr><td>Gap between the inner rails</td><td class="num">19</td><td class="num">9.5"</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">The ".5" holes come from the 48T–36T mesh (1.75" = 3.5 holes): mount those with your offset. 36T–36T is 1.5" (3 holes).</p>
+      </div>
     </div>
+    <h3>Gear row, each side (side view, teeth to teeth)</h3>
+    <div class="fig wide"><svg viewBox="0 0 520 230" role="img" aria-label="Side view of one rail: wheel 48T at hole 6, 36T gears at 9.5, 12.5, 15.5, 18.5 and 21.5 with motors on 9.5 and 21.5, wheel 48T at hole 25; arrows show alternating spin, both wheels the same way">
+          <rect x="22" y="80" width="464" height="20" fill="var(--tint)" stroke="var(--ink)" stroke-width="1.2"/>
+          <circle cx="30" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="46" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="62" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="78" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="94" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="110" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="126" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="142" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="158" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="174" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="190" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="206" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="222" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="238" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="254" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="270" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="286" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="302" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="318" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="334" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="350" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="366" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="382" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="398" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="414" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="430" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="446" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="462" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="478" cy="90" r="2.2" fill="var(--ink)"/>
+          <circle cx="110" cy="90" r="52" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/>
+          <circle cx="414" cy="90" r="52" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/>
+          <circle cx="110" cy="90" r="32" fill="var(--paper)" fill-opacity="1" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="110" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="110" y="30" text-anchor="middle" class="b">↻</text>
+          <text x="110" y="170" text-anchor="middle" class="mono">6</text>
+          <text x="110" y="204" text-anchor="middle">wheel 48T</text>
+          <circle cx="166.0" cy="90" r="24" fill="var(--ink)" fill-opacity="0.85" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="166.0" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="166.0" y="30" text-anchor="middle" class="b">↺</text>
+          <text x="166.0" y="182" text-anchor="middle" class="mono">9.5</text>
+          <text x="166.0" y="216" text-anchor="middle">36T motor</text>
+          <circle cx="214.0" cy="90" r="24" fill="var(--paper)" fill-opacity="1" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="214.0" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="214.0" y="30" text-anchor="middle" class="b">↻</text>
+          <text x="214.0" y="170" text-anchor="middle" class="mono">12.5</text>
+          <text x="214.0" y="204" text-anchor="middle">36T</text>
+          <circle cx="262.0" cy="90" r="24" fill="var(--paper)" fill-opacity="1" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="262.0" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="262.0" y="30" text-anchor="middle" class="b">↺</text>
+          <text x="262.0" y="182" text-anchor="middle" class="mono">15.5</text>
+          <text x="262.0" y="216" text-anchor="middle">36T</text>
+          <circle cx="310.0" cy="90" r="24" fill="var(--paper)" fill-opacity="1" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="310.0" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="310.0" y="30" text-anchor="middle" class="b">↻</text>
+          <text x="310.0" y="170" text-anchor="middle" class="mono">18.5</text>
+          <text x="310.0" y="204" text-anchor="middle">36T</text>
+          <circle cx="358.0" cy="90" r="24" fill="var(--ink)" fill-opacity="0.85" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="358.0" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="358.0" y="30" text-anchor="middle" class="b">↺</text>
+          <text x="358.0" y="182" text-anchor="middle" class="mono">21.5</text>
+          <text x="358.0" y="216" text-anchor="middle">36T motor</text>
+          <circle cx="414" cy="90" r="32" fill="var(--paper)" fill-opacity="1" stroke="var(--ink)" stroke-width="2.2"/>
+          <circle cx="414" cy="90" r="3" fill="var(--paper)" stroke="var(--ink)"/>
+          <text x="414" y="30" text-anchor="middle" class="b">↻</text>
+          <text x="414" y="170" text-anchor="middle" class="mono">25</text>
+          <text x="414" y="204" text-anchor="middle">wheel 48T</text>
+          <line x1="10" y1="142" x2="510" y2="142" stroke="var(--ink)" stroke-width="2"/>
+          <text x="12" y="158" class="g">rail hole →</text>
+          <text x="30" y="74" text-anchor="middle" class="mono g">1</text><text x="478" y="74" text-anchor="middle" class="mono g">29</text>
+          <text x="12" y="16" class="g">FRONT ←</text><text x="508" y="16" text-anchor="end" class="g">→ BACK</text>
+    </svg></div>
+    <ul class="chk">
+      <li><b>7 gears in a row: wheel 48T – 36T – 36T – 36T – 36T – 36T – wheel 48T.</b> Odd count, so both wheels spin the same way. 450 rpm: only the wheel gears are 48T.</li>
+      <li>Motors on the 2nd and 6th gear (holes 9.5 and 21.5), so both spin the same way.</li>
+      <li><b>No slop:</b> every axle in bearings on both rails, shaft collars tight, no wobble when you shake a wheel.</li>
+      <li>Every mesh snug, not tight: spin each side by hand, it rolls freely and feels the same as the other side.</li>
+      <li>Battery and drive motors as low as they go. The balancers handle tipping at the top; reach them out to the front and back corners too.</li>
+    </ul>
   </section>
 
   <!-- 04 -->
