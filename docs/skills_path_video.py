@@ -23,7 +23,7 @@ T = TILE
 LD = (-56.5, -59.2)
 GOALS = {"LS": (-2 * T, T), "G2": (-2 * T, -T), "G3": (-T, -2 * T), "BR": (T, -2 * T), "TALL": (0, 0)}
 # (x, y, heading, act, text, extra). act: None = drive through without stopping
-REACH = 9.65  # robot center to the claw target (body 5.75 + goal radius 3.5 + 0.4)
+REACH = 11.15  # robot center to the claw target (body 7.25 + goal radius 3.5 + 0.4)
 def back(target, h):  # robot center for backing onto `target` with heading h (back faces the target)
     tx, ty = target
     return (round(tx + REACH * math.sin(math.radians(h)), 1), round(ty + REACH * math.cos(math.radians(h)), 1))
@@ -88,7 +88,7 @@ R += [
 for _i in range(1, len(R)):
     if R[_i][3] == "stop" and R[_i][4] == "Pull forward off the goal" and R[_i - 1][3] in ("score", "tall"):
         _x, _y, _h = R[_i - 1][:3]
-        R[_i] = (round(_x + 8 * math.sin(math.radians(_h)), 1), round(_y + 8 * math.cos(math.radians(_h)), 1), _h) + R[_i][3:]
+        R[_i] = (round(_x + 6.5 * math.sin(math.radians(_h)), 1), round(_y + 6.5 * math.cos(math.radians(_h)), 1), _h) + R[_i][3:]
 GRABS = [i for i, r in enumerate(R) if r[3] == "grab"]
 PICKS = [i for i, r in enumerate(R) if r[3] == "pick"]
 
@@ -209,7 +209,7 @@ while i < len(R):
     i = run[-1] + 1
 TOTAL = sum(sd[0] for sd in segs)
 
-# ---- crash check: robot body (14.5 x 11.5) against goals, pins, stacks, clusters, walls ----
+# ---- crash check: robot body (14.5 x 14.5) against goals, pins, stacks, clusters, walls ----
 def crash_check():
     obst = [(gx, gy, 4.5 if g == "TALL" else 3.5, g) for g, (gx, gy) in GOALS.items()]
     obst += [(2 * T, T, 3.5, "blue goal"), (T, 2 * T, 3.5, "blue goal"), (-T, 2 * T, 3.5, "top short"), (2 * T, -T, 3.5, "right short")]
@@ -229,11 +229,11 @@ def crash_check():
                 # obstacle in robot frame (x right, y forward)
                 dx, dy = ox - xx, oy - yy
                 rx, ry = dx * c - dy * s_, dx * s_ + dy * c
-                qx, qy = max(abs(rx) - 7.25, 0), max(abs(ry) - 5.75, 0)
+                qx, qy = max(abs(rx) - 7.25, 0), max(abs(ry) - 7.25, 0)
                 clear = math.hypot(qx, qy) - r
                 if clear < 0: problems.append((round(t, 1), R[k][4], name, round(clear, 1)))
             for cx_ in (-7.25, 7.25):
-                for cy_ in (-5.75, 5.75):
+                for cy_ in (-7.25, 7.25):
                     wx = xx + cx_ * c + cy_ * s_; wy = yy - cx_ * s_ + cy_ * c
                     if abs(wx) > WALL + 0.01 or abs(wy) > WALL + 0.01:
                         if R[k][3] != "load": problems.append((round(t, 1), R[k][4], "wall", round(WALL - max(abs(wx), abs(wy)), 1)))
@@ -315,7 +315,7 @@ for _r in R:
     CARRY.append(_c)
 
 def robot(d, x, y, h, carrying):
-    w, l = 14.5, 11.5
+    w, l = 14.5, 14.5
     c, s = math.cos(math.radians(h)), math.sin(math.radians(h))
     def T(ox, oy):  # ox right, oy forward
         return P(x + ox * c + oy * s, y - ox * s + oy * c)
