@@ -87,7 +87,7 @@ constexpr int WALL_RESET_MAX_MM = 2000;   // past this the sensor isn't reliable
 // Cascade (3 stages, 17.5" each, 2.5" overlap: 30" of travel)
 // ============================================================================
 
-constexpr double CASCADE_TRAVEL = 30;        // inches from all the way down to all the way up
+constexpr double CASCADE_TRAVEL = 31;        // PLANNED: 33-34-34 hole stages, 3- and 2-hole overlaps (measure the real travel)
 constexpr double CASCADE_IN_PER_DEG = 0;     // MEASURE: inches the claw rises per cascade rotation-sensor degree
                                              // (raise to the top, CASCADE_TRAVEL / degrees shown on the screen)
 constexpr double CLAW_HEIGHT_DOWN = 0;       // MEASURE: floor to the bottom of the closed claw, cascade all the way down, in
